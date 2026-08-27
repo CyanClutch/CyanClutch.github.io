@@ -1,4 +1,3 @@
-# Welcome, you have entered my GitHub
 ```html
 <!DOCTYPE html>
 <html lang="en">
