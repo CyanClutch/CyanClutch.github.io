@@ -2,360 +2,1631 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>My Website</title>
+<title>My Website</title>
 
-    <style>
+<style>
 
-                * {
-                    box-sizing: border-box;
-                }
+* {
+    box-sizing: border-box;
+}
 
-                html, body {
-                    margin: 0;
-                    padding: 0;
-                    width: 100%;
-                    min-height: 100%;
-                }
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
 
-                body {
-                    background: #000;
-                    color: #00ffff;
-                    font-family: "Courier New", monospace;
-                    overflow: hidden;
-                }
+body {
+    background: #000;
+    color: #00ffff;
+    font-family: "Courier New", monospace;
+    overflow: hidden;
+}
 
-                /* =====================================================
-           INTRO
-        ===================================================== */
 
-                #intro {
-                    position: fixed;
-                    inset: 0;
-                    background: #000;
-                    z-index: 9999;
-                    padding: 30px;
-                    overflow: hidden;
-                    transition: opacity 1s ease, transform 1s ease;
-                }
+/* =====================================================
+   INTRO
+===================================================== */
 
-                    #intro::after {
-                        content: "";
-                        position: absolute;
-                        inset: 0;
-                        pointer-events: none;
-                        background: repeating-linear-gradient( to bottom, rgba(0,255,255,0.025) 0px, rgba(0,255,255,0.025) 1px, transparent 1px, transparent 4px );
-                    }
+#intro {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    padding: 30px;
+    overflow: hidden;
+    transition: opacity 1s ease, transform 1s ease;
+}
 
-                /* =====================================================
-           MATRIX
-        ===================================================== */
+#intro::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
 
-                #matrix {
-                    position: absolute;
-                    inset: 0;
-                    overflow: hidden;
-                    opacity: 0.10;
-                    pointer-events: none;
-                }
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,255,255,0.025) 0px,
+        rgba(0,255,255,0.025) 1px,
+        transparent 1px,
+        transparent 4px
+    );
+}
 
-                .matrix-line {
-                    position: absolute;
-                    white-space: nowrap;
-                    font-size: 14px;
-                    color: #00ffff;
-                    animation: matrixFall linear infinite;
-                }
 
-                @keyframes matrixFall {
+/* =====================================================
+   MATRIX
+===================================================== */
 
-                    from {
-                        transform: translateY(-100vh);
-                    }
+#matrix {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.10;
+    pointer-events: none;
+}
 
-                    to {
-                        transform: translateY(100vh);
-                    }
-                }
+.matrix-line {
+    position: absolute;
+    white-space: nowrap;
+    font-size: 14px;
+    color: #00ffff;
+    animation: matrixFall linear infinite;
+}
 
-                /* =====================================================
-           TERMINAL
-        ===================================================== */
+@keyframes matrixFall {
 
-                .terminal {
-                    position: relative;
-                    z-index: 2;
-                    max-width: 1000px;
-                    height: 100%;
-                    margin: auto;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                }
+    from {
+        transform: translateY(-100vh);
+    }
 
-                .system-title {
-                    font-size: 15px;
-                    margin-bottom: 20px;
-                    opacity: 0.8;
-                }
+    to {
+        transform: translateY(100vh);
+    }
 
-                .logs {
-                    min-height: 180px;
-                }
+}
 
-                .line {
-                    margin: 9px 0;
-                    color: #00ffff;
-                    text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
-                }
 
-                /* =====================================================
-           AUTH / LOADING WORLD
-        ===================================================== */
+/* =====================================================
+   TERMINAL / UNITY CONSOLE
+===================================================== */
 
-                .big {
-                    text-align: center;
-                    font-size: clamp( 20px, 3vw, 38px );
-                    font-weight: bold;
-                    letter-spacing: 4px;
-                    margin: 15px 0 10px;
-                    color: #00ffff;
-                    text-shadow: 0 0 5px #00ffff, 0 0 15px #00ffff, 0 0 25px #00ffff;
-                    animation: glitch 2s infinite;
-                }
+.terminal {
+    position: relative;
+    z-index: 2;
 
-                @keyframes glitch {
+    width: min(1050px, 94vw);
 
-                    0%, 90%, 100% {
-                        transform: translate(0);
-                    }
+    margin: auto;
 
-                    92% {
-                        transform: translate(-4px, 2px);
-                    }
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
-                    94% {
-                        transform: translate(4px, -2px);
-                    }
 
-                    96% {
-                        transform: translate(-2px, 0);
-                    }
-                }
+/* Console */
 
-                /* =====================================================
-           ROOM ID
-        ===================================================== */
+.console-window {
 
-                .session {
-                    text-align: center;
-                    margin-top: 5px;
-                    opacity: 0.8;
-                }
+    width: 100%;
 
-                #sessionID {
-                    color: #00ffff;
-                }
+    background: transparent;
 
-                /* =====================================================
-           LOADING BAR
-        ===================================================== */
+    border: 1px solid rgba(255,255,255,0.16);
 
-                .loading-container {
-                    width: min(700px, 90%);
-                    margin: 25px auto;
-                }
+    box-shadow:
+        0 0 25px rgba(0,0,0,0.35);
 
-                .loading-border {
-                    border: 2px solid #00ffff;
-                    padding: 5px;
-                    box-shadow: 0 0 10px rgba(0,255,255,0.4), inset 0 0 10px rgba(0,255,255,0.1);
-                }
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+}
 
-                #loading-bar {
-                    width: 0%;
-                    height: 24px;
-                    background: #00ffff;
-                    box-shadow: 0 0 10px #00ffff, 0 0 25px #00ffff;
-                    transition: width 0.25s ease;
-                }
 
-                #percent {
-                    text-align: center;
-                    margin-top: 10px;
-                }
+/* Header */
 
-                /* =====================================================
-           WEBSITE
-        ===================================================== */
+.console-header {
 
-                #website {
-                    display: none;
-                    min-height: 100vh;
-                    padding: 60px 20px;
-                    background: radial-gradient( circle at center, #002020 0%, #000505 45%, #000 80% );
-                    text-align: center;
-                    overflow-y: auto;
-                    color: #00ffff;
-                }
+    height: 34px;
 
-                    #website h1 {
-                        font-size: clamp( 40px, 7vw, 80px );
-                        margin-bottom: 5px;
-                        color: #00ffff;
-                        text-shadow: 0 0 10px #00ffff, 0 0 30px #00ffff;
-                    }
+    display: flex;
+    align-items: center;
 
-                .subtitle {
-                    color: #00ffff;
-                    margin-bottom: 50px;
-                }
+    padding: 0 10px;
 
-                /* =====================================================
-           CARDS
-        ===================================================== */
+    background:
+        rgba(45,45,45,0.35);
 
-                .container {
-                    max-width: 1000px;
-                    margin: auto;
-                }
+    border-bottom:
+        1px solid rgba(255,255,255,0.14);
 
-                .card {
-                    border: 1px solid #00ffff;
-                    background: rgba(0,20,20,0.55);
-                    padding: 25px;
-                    margin: 20px 0;
-                    text-align: left;
-                    color: #00ffff;
-                    box-shadow: 0 0 15px rgba(0,255,255,0.12);
-                    transition: 0.25s;
-                }
+    color: #d0d0d0;
 
-                    .card:hover {
-                        box-shadow: 0 0 25px rgba(0,255,255,0.35);
-                        transform: translateY(-3px);
-                    }
+    font-size: 12px;
+}
 
-                    .card h2 {
-                        margin-top: 0;
-                        color: #00ffff;
-                    }
+.console-icon {
 
-                    .card p,
-                    .card strong {
-                        color: #00ffff;
-                    }
+    width: 17px;
+    height: 17px;
 
-                /* =====================================================
-           BUTTONS
-        ===================================================== */
+    margin-right: 7px;
 
-                .button {
-                    display: inline-block;
-                    padding: 12px 25px;
-                    margin: 7px;
-                    border: 1px solid #00ffff;
-                    color: #00ffff;
-                    text-decoration: none;
-                    transition: 0.2s;
-                }
+    border-radius: 50%;
 
-                    .button:hover {
-                        background: #00ffff;
-                        color: #000;
-                        box-shadow: 0 0 20px #00ffff;
-                    }
+    border: 2px solid #4fc3f7;
 
-                /* =====================================================
-           FOOTER
-        ===================================================== */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-                footer {
-                    margin-top: 50px;
-                    padding: 30px;
-                    opacity: 0.5;
-                    font-size: 13px;
-                    color: #00ffff;
-                }
+    color: #4fc3f7;
 
-                #footerID {
-                    color: #00ffff;
-                }
-    </style>
+    font-family: Georgia, serif;
+
+    font-size: 11px;
+
+    font-weight: bold;
+}
+
+.console-title {
+    font-weight: 600;
+}
+
+.console-controls {
+
+    margin-left: auto;
+
+    display: flex;
+
+    gap: 7px;
+}
+
+.console-control {
+
+    min-width: 22px;
+    height: 21px;
+
+    padding: 0 5px;
+
+    border:
+        1px solid rgba(255,255,255,0.13);
+
+    background:
+        rgba(55,55,55,0.35);
+
+    color: #aaa;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 10px;
+}
+
+
+/* Toolbar */
+
+.console-toolbar {
+
+    height: 31px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 9px;
+
+    background:
+        rgba(35,35,35,0.22);
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.10);
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+}
+
+.console-filter {
+
+    color: #aaa;
+
+    font-size: 11px;
+
+    margin-right: 20px;
+}
+
+.console-filter.active {
+    color: #ddd;
+}
+
+
+/* Time display */
+
+.console-clock {
+
+    margin-left: auto;
+
+    display: flex;
+
+    gap: 15px;
+
+    color: #777;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+.clock-est,
+.clock-cst {
+    color: #8b8b8b;
+}
+
+
+/* Logs */
+
+.logs {
+
+    min-height: 180px;
+
+    padding: 5px 0;
+
+    background: transparent;
+}
+
+
+/* Console entry */
+
+.console-entry {
+
+    min-height: 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 3px 10px;
+
+    color: #d7d7d7;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    font-size: 12px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.035);
+}
+
+.console-entry:hover {
+
+    background:
+        rgba(255,255,255,0.035);
+}
+
+
+/* Info icon */
+
+.info-icon {
+
+    width: 17px;
+    height: 17px;
+
+    flex-shrink: 0;
+
+    margin-right: 8px;
+
+    border-radius: 50%;
+
+    border: 2px solid #4fc3f7;
+
+    color: #4fc3f7;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-family: Georgia, serif;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    text-shadow:
+        0 0 5px #4fc3f7;
+}
+
+
+/* Log timestamp */
+
+.console-time {
+
+    color: #777;
+
+    margin-right: 10px;
+
+    font-size: 10px;
+
+    min-width: 150px;
+
+    white-space: nowrap;
+}
+
+
+/* Log text */
+
+.console-message {
+
+    color: #ddd;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* =====================================================
+   AUTH / LOADING WORLD
+===================================================== */
+
+.big {
+
+    text-align: center;
+
+    font-size: clamp(
+        20px,
+        3vw,
+        38px
+    );
+
+    font-weight: bold;
+
+    letter-spacing: 4px;
+
+    margin: 15px 0 10px;
+
+    color: #00ffff;
+
+    text-shadow:
+        0 0 5px #00ffff,
+        0 0 15px #00ffff,
+        0 0 25px #00ffff;
+
+    animation: glitch 2s infinite;
+}
+
+@keyframes glitch {
+
+    0%, 90%, 100% {
+        transform: translate(0);
+    }
+
+    92% {
+        transform: translate(-4px, 2px);
+    }
+
+    94% {
+        transform: translate(4px, -2px);
+    }
+
+    96% {
+        transform: translate(-2px, 0);
+    }
+
+}
+
+
+/* =====================================================
+   ROOM ID
+===================================================== */
+
+.session {
+
+    text-align: center;
+
+    margin-top: 5px;
+
+    opacity: 0.8;
+}
+
+#sessionID {
+    color: #00ffff;
+}
+
+
+/* =====================================================
+   LOADING BAR
+===================================================== */
+
+.loading-container {
+
+    width: min(700px, 90%);
+
+    margin: 25px auto;
+}
+
+.loading-border {
+
+    border: 2px solid #00ffff;
+
+    padding: 5px;
+
+    box-shadow:
+        0 0 10px rgba(0,255,255,0.4),
+        inset 0 0 10px rgba(0,255,255,0.1);
+}
+
+#loading-bar {
+
+    width: 0%;
+
+    height: 24px;
+
+    background: #00ffff;
+
+    box-shadow:
+        0 0 10px #00ffff,
+        0 0 25px #00ffff;
+
+    transition:
+        width 0.25s ease;
+}
+
+#percent {
+
+    text-align: center;
+
+    margin-top: 10px;
+}
+
+
+/* =====================================================
+   UNITY EDITOR WEBSITE
+===================================================== */
+
+#website {
+
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: #1e1e1e;
+
+    color: #d6d6d6;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   UNITY TOP BAR
+===================================================== */
+
+.unity-topbar {
+
+    height: 35px;
+
+    background: #292929;
+
+    border-bottom: 1px solid #111;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 12px;
+
+    color: #ddd;
+
+    font-size: 13px;
+}
+
+.unity-logo {
+
+    font-weight: bold;
+
+    margin-right: 25px;
+
+    color: #eee;
+}
+
+.top-item {
+
+    margin-right: 22px;
+
+    color: #bbb;
+}
+
+
+/* =====================================================
+   UNITY TOOLBAR
+===================================================== */
+
+.unity-toolbar {
+
+    height: 42px;
+
+    background: #323232;
+
+    border-bottom: 1px solid #171717;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 10px;
+}
+
+.tool-button {
+
+    height: 28px;
+
+    min-width: 32px;
+
+    margin-right: 5px;
+
+    background: #444;
+
+    border: 1px solid #222;
+
+    color: #ccc;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 13px;
+}
+
+.tool-button:hover {
+
+    background: #505050;
+}
+
+
+/* =====================================================
+   MAIN UNITY LAYOUT
+===================================================== */
+
+.unity-main {
+
+    height: calc(100vh - 77px);
+
+    display: grid;
+
+    grid-template-columns:
+        250px
+        1fr
+        300px;
+
+    grid-template-rows:
+        1fr
+        240px;
+}
+
+
+/* =====================================================
+   HIERARCHY
+===================================================== */
+
+.hierarchy {
+
+    background: #252525;
+
+    border-right: 2px solid #151515;
+
+    grid-row: 1 / 3;
+
+    overflow-y: auto;
+}
+
+.panel-title {
+
+    height: 28px;
+
+    background: #333;
+
+    border-bottom: 1px solid #181818;
+
+    padding: 7px 10px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    color: #ddd;
+}
+
+.hierarchy-content {
+
+    padding: 8px 5px;
+
+    font-size: 13px;
+}
+
+.tree-item {
+
+    padding: 5px 8px;
+
+    color: #ccc;
+}
+
+.tree-item:hover {
+
+    background: #3a3a3a;
+}
+
+.tree-child {
+
+    padding-left: 25px;
+}
+
+.tree-section {
+
+    margin-top: 8px;
+
+    color: #aaa;
+
+    font-weight: bold;
+}
+
+
+/* =====================================================
+   SCENE
+===================================================== */
+
+.scene-window {
+
+    background: #181818;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.scene-toolbar {
+
+    height: 29px;
+
+    background: #303030;
+
+    border-bottom: 1px solid #111;
+
+    display: flex;
+
+    align-items: center;
+
+    padding-left: 8px;
+}
+
+.scene-tab {
+
+    background: #202020;
+
+    border-right: 1px solid #111;
+
+    padding: 7px 18px;
+
+    font-size: 12px;
+
+    color: #ddd;
+}
+
+.scene-content {
+
+    position: absolute;
+
+    inset: 29px 0 0 0;
+
+    background:
+
+        linear-gradient(
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px
+        ),
+
+        #202020;
+
+    background-size:
+        30px 30px,
+        30px 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+/* =====================================================
+   YOUTUBE
+===================================================== */
+
+.youtube-window {
+
+    width: 80%;
+
+    max-width: 850px;
+
+    height: 70%;
+
+    min-height: 300px;
+
+    background: #111;
+
+    border: 1px solid #555;
+
+    box-shadow:
+        0 0 0 1px #111,
+        0 10px 35px rgba(0,0,0,0.5);
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.youtube-title {
+
+    height: 32px;
+
+    background: #2d2d2d;
+
+    border-bottom: 1px solid #111;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 10px;
+
+    font-size: 12px;
+
+    color: #ccc;
+}
+
+.youtube-title span {
+
+    margin-left: auto;
+
+    color: #777;
+}
+
+.youtube-video {
+
+    flex: 1;
+
+    background: #000;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.youtube-placeholder {
+
+    text-align: center;
+
+    color: #777;
+
+    font-size: 14px;
+}
+
+.youtube-placeholder strong {
+
+    display: block;
+
+    color: #aaa;
+
+    margin-bottom: 8px;
+}
+
+
+/* =====================================================
+   INSPECTOR
+===================================================== */
+
+.inspector {
+
+    background: #252525;
+
+    border-left: 2px solid #151515;
+
+    overflow-y: auto;
+}
+
+.inspector-content {
+
+    padding: 12px;
+}
+
+.inspector-object {
+
+    background: #303030;
+
+    border: 1px solid #444;
+
+    padding: 10px;
+
+    margin-bottom: 12px;
+
+    color: #ddd;
+
+    font-size: 13px;
+}
+
+.inspector-field {
+
+    margin-bottom: 14px;
+}
+
+.field-label {
+
+    color: #aaa;
+
+    font-size: 11px;
+
+    margin-bottom: 5px;
+}
+
+.field-value {
+
+    background: #1d1d1d;
+
+    border: 1px solid #444;
+
+    padding: 7px;
+
+    color: #ccc;
+
+    font-size: 12px;
+
+    word-break: break-all;
+}
+
+
+/* =====================================================
+   PROJECT / FRIENDS
+===================================================== */
+
+.project-window {
+
+    grid-column: 2 / 4;
+
+    background: #252525;
+
+    border-top: 2px solid #151515;
+
+    overflow-y: auto;
+}
+
+.project-content {
+
+    padding: 15px;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+}
+
+.friend {
+
+    width: 115px;
+
+    height: 100px;
+
+    background: #303030;
+
+    border: 1px solid #444;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #bbb;
+
+    transition: 0.15s;
+}
+
+.friend:hover {
+
+    background: #3b3b3b;
+
+    border-color: #666;
+
+    transform: translateY(-2px);
+}
+
+.friend-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 4px;
+
+    background: #444;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 8px;
+
+    font-size: 20px;
+}
+
+.friend-name {
+
+    font-size: 11px;
+
+    color: #ccc;
+}
+
+
+/* =====================================================
+   STATUS BAR
+===================================================== */
+
+.unity-status {
+
+    position: fixed;
+
+    bottom: 0;
+
+    left: 0;
+    right: 0;
+
+    height: 22px;
+
+    background: #292929;
+
+    border-top: 1px solid #111;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 8px;
+
+    font-size: 11px;
+
+    color: #888;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .unity-main {
+
+        grid-template-columns:
+            190px
+            1fr;
+
+        grid-template-rows:
+            1fr
+            190px;
+    }
+
+    .inspector {
+
+        display: none;
+    }
+
+    .project-window {
+
+        grid-column: 2;
+    }
+
+    .youtube-window {
+
+        width: 90%;
+
+        height: 65%;
+    }
+
+    .console-time {
+
+        min-width: 110px;
+    }
+
+    .console-clock {
+
+        display: none;
+    }
+
+}
+
+</style>
 </head>
+
 
 <body>
 
 
-    <!-- =====================================================
-         HACKER INTRO
-    ===================================================== -->
+<!-- =====================================================
+     HACKER INTRO
+===================================================== -->
 
-    <div id="intro">
+<div id="intro">
 
-        <div id="matrix"></div>
+    <div id="matrix"></div>
 
-        <div class="terminal">
+    <div class="terminal">
 
-            <div class="system-title">
-                SYSTEM://SECURE_CONNECTION
+
+        <!-- UNITY CONSOLE -->
+
+        <div class="console-window">
+
+
+            <!-- CONSOLE HEADER -->
+
+            <div class="console-header">
+
+                <div class="console-icon">
+                    i
+                </div>
+
+                <div class="console-title">
+                    Console
+                </div>
+
+
+                <div class="console-controls">
+
+                    <div class="console-control">
+                        ●
+                    </div>
+
+                    <div class="console-control">
+                        ▣
+                    </div>
+
+                    <div class="console-control">
+                        ×
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="logs"
-                 id="logs"></div>
+
+            <!-- CONSOLE TOOLBAR -->
+
+            <div class="console-toolbar">
+
+                <div class="console-filter active">
+                    All
+                </div>
+
+                <div class="console-filter">
+                    Collapse
+                </div>
+
+                <div class="console-filter">
+                    Clear
+                </div>
 
 
-            <!-- AUTH STATUS -->
+                <!-- LIVE CLOCKS -->
 
-            <div class="big"
-                 id="statusText"
-                 style="display:none;">
-                AUTHICATION SUCCESSFUL
+                <div class="console-clock">
+
+                    <span class="clock-est">
+                        EST: <span id="estClock">--:--:-- --</span>
+                    </span>
+
+                    <span class="clock-cst">
+                        CST: <span id="cstClock">--:--:-- --</span>
+                    </span>
+
+                </div>
+
             </div>
 
 
-            <div style="text-align:center">
+            <!-- LOGS -->
 
-                &gt; WELCOME TO MY DOMAIN
+            <div
+                class="logs"
+                id="logs"
+            ></div>
 
-                <span style="
+
+        </div>
+
+
+        <!-- AUTH STATUS -->
+
+        <div
+            class="big"
+            id="statusText"
+            style="display:none;"
+        >
+            AUTHICATION SUCCESSFUL
+        </div>
+
+
+        <div style="text-align:center">
+
+            &gt; WELCOME TO MY DOMAIN
+
+            <span
+                style="
                     display:inline-block;
                     width:9px;
                     height:17px;
                     background:#00ffff;
-                "></span>
+                "
+            ></span>
+
+        </div>
+
+
+        <!-- ROOM ID -->
+
+        <div class="session">
+
+            ROOM ID:
+
+            <span id="sessionID">
+                NOT CONNECTED
+            </span>
+
+        </div>
+
+
+        <!-- LOADING -->
+
+        <div class="loading-container">
+
+            <div class="loading-border">
+
+                <div id="loading-bar"></div>
+
+            </div>
+
+            <div id="percent">
+                INITIALIZING... 0%
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     UNITY PERSONAL WEBSITE
+===================================================== -->
+
+<div id="website">
+
+
+    <!-- TOP BAR -->
+
+    <div class="unity-topbar">
+
+        <div class="unity-logo">
+            UNITY
+        </div>
+
+        <div class="top-item">
+            File
+        </div>
+
+        <div class="top-item">
+            Edit
+        </div>
+
+        <div class="top-item">
+            Assets
+        </div>
+
+        <div class="top-item">
+            GameObject
+        </div>
+
+        <div class="top-item">
+            Component
+        </div>
+
+        <div class="top-item">
+            Window
+        </div>
+
+        <div class="top-item">
+            Help
+        </div>
+
+    </div>
+
+
+    <!-- TOOLBAR -->
+
+    <div class="unity-toolbar">
+
+        <div class="tool-button">
+            Q
+        </div>
+
+        <div class="tool-button">
+            W
+        </div>
+
+        <div class="tool-button">
+            E
+        </div>
+
+        <div class="tool-button">
+            R
+        </div>
+
+        <div class="tool-button">
+            T
+        </div>
+
+        <div class="tool-button">
+            Y
+        </div>
+
+        <div
+            style="
+                margin-left:auto;
+                color:#777;
+                font-size:11px;
+            "
+        >
+            PERSONAL PROJECT
+        </div>
+
+    </div>
+
+
+    <!-- UNITY MAIN -->
+
+    <div class="unity-main">
+
+
+        <!-- HIERARCHY -->
+
+        <div class="hierarchy">
+
+            <div class="panel-title">
+                HIERARCHY
+            </div>
+
+            <div class="hierarchy-content">
+
+                <div class="tree-item">
+                    ▼ PersonalWebsite
+                </div>
+
+                <div class="tree-item tree-child">
+                    ▼ AboutMe
+                </div>
+
+                <div class="tree-item tree-child">
+                    ├─ Name
+                </div>
+
+                <div class="tree-item tree-child">
+                    ├─ Bio
+                </div>
+
+                <div class="tree-item tree-child">
+                    ├─ Projects
+                </div>
+
+                <div class="tree-item tree-child">
+                    ├─ Hobbies
+                </div>
+
+                <div class="tree-item tree-child">
+                    └─ Goals
+                </div>
+
+
+                <div class="tree-section">
+                    ABOUT ME
+                </div>
+
+                <div class="tree-item tree-child">
+                    Name: YOUR NAME
+                </div>
+
+                <div class="tree-item tree-child">
+                    Creator / Developer
+                </div>
+
+                <div class="tree-item tree-child">
+                    I make games, code,
+                    and other projects.
+                </div>
+
+                <div class="tree-item tree-child">
+                    Welcome to my domain.
+                </div>
+
+
+                <div class="tree-section">
+                    INFORMATION
+                </div>
+
+                <div class="tree-item tree-child">
+                    Status: Online
+                </div>
+
+                <div class="tree-item tree-child">
+                    Projects: Active
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SCENE -->
+
+        <div class="scene-window">
+
+            <div class="scene-toolbar">
+
+                <div class="scene-tab">
+                    Scene
+                </div>
+
+                <div class="scene-tab">
+                    Game
+                </div>
 
             </div>
 
 
-            <!-- ROOM ID -->
+            <div class="scene-content">
 
-            <div class="session">
+                <div class="youtube-window">
 
-                ROOM ID:
+                    <div class="youtube-title">
 
-                <span id="sessionID">
-                    NOT CONNECTED
-                </span>
+                        YouTubePreview
+
+                        <span>
+                            Scene
+                        </span>
+
+                    </div>
+
+
+                    <div class="youtube-video">
+
+                        <div class="youtube-placeholder">
+
+                            <strong>
+                                YOUTUBE PREVIEW
+                            </strong>
+
+                            Add your YouTube link
+                            to the iframe here.
+
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 
+        </div>
 
-            <!-- LOADING -->
 
-            <div class="loading-container">
+        <!-- INSPECTOR -->
 
-                <div class="loading-border">
+        <div class="inspector">
 
-                    <div id="loading-bar"></div>
+            <div class="panel-title">
+                INSPECTOR
+            </div>
+
+            <div class="inspector-content">
+
+
+                <div class="inspector-object">
+                    SOCIALS
+                </div>
+
+
+                <div class="inspector-field">
+
+                    <div class="field-label">
+                        YouTube
+                    </div>
+
+                    <div class="field-value">
+                        YOUR YOUTUBE LINK
+                    </div>
 
                 </div>
 
-                <div id="percent">
-                    INITIALIZING... 0%
+
+                <div class="inspector-field">
+
+                    <div class="field-label">
+                        Discord
+                    </div>
+
+                    <div class="field-value">
+                        YOUR DISCORD
+                    </div>
+
                 </div>
+
+
+                <div class="inspector-field">
+
+                    <div class="field-label">
+                        Meta
+                    </div>
+
+                    <div class="field-value">
+                        YOUR META PROFILE
+                    </div>
+
+                </div>
+
+
+                <div class="inspector-field">
+
+                    <div class="field-label">
+                        GitHub
+                    </div>
+
+                    <div class="field-value">
+                        YOUR GITHUB
+                    </div>
+
+                </div>
+
+
+                <div class="inspector-field">
+
+                    <div class="field-label">
+                        Status
+                    </div>
+
+                    <div class="field-value">
+                        ONLINE
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROJECT / FRIENDS -->
+
+        <div class="project-window">
+
+            <div class="panel-title">
+                PROJECT
+            </div>
+
+
+            <div class="project-content">
+
+
+                <div class="friend">
+
+                    <div class="friend-icon">
+                        👤
+                    </div>
+
+                    <div class="friend-name">
+                        FRIEND 01
+                    </div>
+
+                </div>
+
+
+                <div class="friend">
+
+                    <div class="friend-icon">
+                        👤
+                    </div>
+
+                    <div class="friend-name">
+                        FRIEND 02
+                    </div>
+
+                </div>
+
+
+                <div class="friend">
+
+                    <div class="friend-icon">
+                        👤
+                    </div>
+
+                    <div class="friend-name">
+                        FRIEND 03
+                    </div>
+
+                </div>
+
+
+                <div class="friend">
+
+                    <div class="friend-icon">
+                        👤
+                    </div>
+
+                    <div class="friend-name">
+                        FRIEND 04
+                    </div>
+
+                </div>
+
+
+                <div class="friend">
+
+                    <div class="friend-icon">
+                        👤
+                    </div>
+
+                    <div class="friend-name">
+                        FRIEND 05
+                    </div>
+
+                </div>
+
 
             </div>
 
@@ -364,630 +1635,666 @@
     </div>
 
 
-    <!-- =====================================================
-         PERSONAL WEBSITE
-    ===================================================== -->
+    <!-- STATUS -->
 
-    <div id="website">
+    <div class="unity-status">
 
-        <h1>
-            YOUR NAME
-        </h1>
+        Ready
 
-        <div class="subtitle">
-            &gt; Welcome to my personal website_
-        </div>
-
-        <div class="container">
-
-
-            <!-- ABOUT -->
-
-            <div class="card">
-
-                <h2>
-                    &gt; ABOUT ME
-                </h2>
-
-                <p>
-                    Hey! I'm YOUR NAME.
-                </p>
-
-                <p>
-                    Put whatever you want about yourself here.
-                    You can talk about your projects, games,
-                    coding, hobbies, or anything else.
-                </p>
-
-            </div>
-
-
-            <!-- PROJECTS -->
-
-            <div class="card">
-
-                <h2>
-                    &gt; PROJECTS
-                </h2>
-
-                <p>
-                    <strong>PROJECT 01</strong>
-                    — Put your project description here.
-                </p>
-
-                <p>
-                    <strong>PROJECT 02</strong>
-                    — Put another project here.
-                </p>
-
-                <p>
-                    <strong>PROJECT 03</strong>
-                    — Put another project here.
-                </p>
-
-            </div>
-
-
-            <!-- SOCIALS -->
-
-            <div class="card">
-
-                <h2>
-                    &gt; SOCIALS
-                </h2>
-
-                <a class="button"
-                   href="#"
-                   target="_blank">
-                    DISCORD
-                </a>
-
-                <a class="button"
-                   href="#"
-                   target="_blank">
-                    YOUTUBE
-                </a>
-
-                <a class="button"
-                   href="#"
-                   target="_blank">
-                    GITHUB
-                </a>
-
-            </div>
-
-
-            <!-- CONTACT -->
-
-            <div class="card">
-
-                <h2>
-                    &gt; CONTACT
-                </h2>
-
-                <p>
-                    Want to contact me?
-                </p>
-
-                <a class="button"
-                   href="mailto:YOUR@email.com">
-                    SEND MESSAGE
-                </a>
-
-            </div>
-
-        </div>
-
-
-        <footer>
-
-            SYSTEM ONLINE //
-
-            CONNECTION ESTABLISHED //
-
-            <span id="footerID"></span>
-
-        </footer>
+        <span style="margin-left:auto;">
+            PersonalWebsite.unity
+        </span>
 
     </div>
 
+</div>
 
-    <script>
 
-        /* =====================================================
-           RANDOM ROOM ID
-        ===================================================== */
+<script>
 
-        function randomSixDigitNumber() {
 
-            return Math.floor(
-                100000 +
-                Math.random() * 900000
-            );
+/* =====================================================
+   RANDOM ROOM ID
+===================================================== */
 
-        }
+function randomSixDigitNumber() {
 
+    return Math.floor(
+        100000 +
+        Math.random() * 900000
+    );
 
-        /* =====================================================
-           RANDOM DELAY
-        ===================================================== */
+}
 
-        function randomDelay(min, max) {
 
-            return Math.floor(
-                Math.random() *
-                (max - min + 1)
-            ) + min;
+/* =====================================================
+   RANDOM DELAY
+===================================================== */
 
-        }
+function randomDelay(min, max) {
 
+    return Math.floor(
+        Math.random() *
+        (max - min + 1)
+    ) + min;
 
-        /* =====================================================
-           MATRIX
-        ===================================================== */
+}
 
-        const matrix =
-            document.getElementById(
-                "matrix"
-            );
 
-        const characters =
-            "01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&@";
+/* =====================================================
+   12-HOUR EST / CST CLOCK
+===================================================== */
 
+function formatClock(date, offsetHours) {
 
-        for (
-            let i = 0;
-            i < 45;
-            i++
-        ) {
+    /*
+       Convert current UTC time into a fixed
+       EST/CST offset.
+    */
 
-            const line =
-                document.createElement(
-                    "div"
-                );
+    const utc =
+        date.getTime() +
+        date.getTimezoneOffset() * 60000;
 
-            line.className =
-                "matrix-line";
-
-            let text = "";
-
-            for (
-                let j = 0;
-                j < 40;
-                j++
-            ) {
-
-                text +=
-                    characters[
-                    Math.floor(
-                        Math.random() *
-                        characters.length
-                    )
-                    ];
-
-            }
-
-            line.textContent =
-                text;
-
-            line.style.left =
-                Math.random() * 100 + "%";
-
-            line.style.animationDuration =
-                4 +
-                Math.random() * 8 +
-                "s";
-
-            line.style.animationDelay =
-                Math.random() * 5 +
-                "s";
-
-            matrix.appendChild(
-                line
-            );
-
-        }
-
-
-        /* =====================================================
-           ELEMENTS
-        ===================================================== */
-
-        const logs =
-            document.getElementById(
-                "logs"
-            );
-
-        const roomIDElement =
-            document.getElementById(
-                "sessionID"
-            );
-
-        const statusText =
-            document.getElementById(
-                "statusText"
-            );
-
-        const bar =
-            document.getElementById(
-                "loading-bar"
-            );
-
-        const percent =
-            document.getElementById(
-                "percent"
-            );
-
-        const intro =
-            document.getElementById(
-                "intro"
-            );
-
-        const website =
-            document.getElementById(
-                "website"
-            );
-
-
-        /* =====================================================
-           BOOT SEQUENCE
-        ===================================================== */
-
-        const bootMessages = [
-
-            {
-                text:
-                    "> AUTHENTICATING USER...",
-                delay: 400
-            },
-
-            {
-                text:
-                    "> AUTHENTICATION SUCCESSFUL [ OK ]",
-                delay: 500
-            },
-
-            {
-                text:
-                    "> CONNECTING TO PLAYFAB...",
-                delay: 650
-            },
-
-            {
-                text:
-                    "> LOGGING INTO PLAYFAB... [ OK ]",
-                delay: 600
-            },
-
-            {
-                text:
-                    "> RETRIEVING PLAYER DATA... [ OK ]",
-                delay: 500
-            },
-
-            {
-                text:
-                    "> CONNECTING TO PHOTON...",
-                delay: 650
-            },
-
-            {
-                text:
-                    "> CONNECTED TO PHOTON MASTER SERVER [ OK ]",
-                delay: 600
-            },
-
-            {
-                text:
-                    "> JOINING SERVER...",
-                delay: 650
-            },
-
-            {
-                text:
-                    "> SUCCESSFULLY JOINED",
-                delay: 500,
-                joined: true
-            },
-
-            {
-                text:
-                    "> SYNCHRONIZING DATA... [ OK ]",
-                delay: 500
-            },
-
-            {
-                text:
-                    "> LOADING WEBSITE...",
-                delay: 700,
-                finishLoading: true
-            }
-
-        ];
-
-
-        let messageIndex = 0;
-
-
-        /* =====================================================
-           LOADING BAR
-           Jumps by roughly 8-9% at a time.
-           Stops at 96% until LOADING WEBSITE appears.
-        ===================================================== */
-
-        let progress = 0;
-
-        const loading =
-            setInterval(() => {
-
-                if (progress < 96) {
-
-                    /*
-                     * Random jump between 8 and 9%.
-                     */
-
-                    progress +=
-                        Math.floor(
-                            Math.random() * 2
-                        ) + 8;
-
-
-                    /*
-                     * Never go above 96%
-                     * before the final message.
-                     */
-
-                    if (progress > 96) {
-                        progress = 96;
-                    }
-
-
-                    bar.style.width =
-                        progress + "%";
-
-
-                    percent.textContent =
-                        "LOADING... " +
-                        Math.floor(progress) +
-                        "%";
-
-                }
-
-            }, 700);
-
-
-        /* =====================================================
-           ADD BOOT MESSAGE
-        ===================================================== */
-
-        function addBootMessage() {
-
-            if (
-                messageIndex >=
-                bootMessages.length
-            ) {
-
-                return;
-
-            }
-
-
-            const message =
-                bootMessages[
-                messageIndex
-                ];
-
-
-            const line =
-                document.createElement(
-                    "div"
-                );
-
-
-            line.className =
-                "line";
-
-
-            line.textContent =
-                message.text;
-
-
-            logs.appendChild(
-                line
-            );
-
-
-            /* =================================================
-               ROOM ID AFTER SUCCESSFULLY JOINED
-            ================================================= */
-
-            if (
-                message.joined
-            ) {
-
-                const roomID =
-                    randomSixDigitNumber();
-
-
-                roomIDElement.textContent =
-                    roomID;
-
-            }
-
-
-            /* =================================================
-               FINISH LOADING WHEN
-               "LOADING WEBSITE..." APPEARS
-            ================================================= */
-
-            if (
-                message.finishLoading
-            ) {
-
-                clearInterval(
-                    loading
-                );
-
-
-                /*
-                 * Finish the final few percent.
-                 */
-
-                progress = 100;
-
-
-                bar.style.width =
-                    "100%";
-
-
-                percent.textContent =
-                    "SYSTEM READY — 100%";
-
-
-                /*
-                 * Start Authication
-                 * sequence.
-                 */
-
-                startAuthSuccessSequence();
-
-            }
-
-
-            messageIndex++;
-
-
-            /* =================================================
-               RANDOM DELAY BETWEEN BOOT MESSAGES
-            ================================================= */
-
-            if (
-                !message.finishLoading
-            ) {
-
-                const nextDelay =
-                    message.delay +
-                    randomDelay(
-                        300,
-                        1200
-                    );
-
-
-                setTimeout(
-                    addBootMessage,
-                    nextDelay
-                );
-
-            }
-
-        }
-
-
-        /* =====================================================
-           START BOOT
-        ===================================================== */
-
-        setTimeout(
-            addBootMessage,
-            randomDelay(
-                300,
-                1000
-            )
+    const converted =
+        new Date(
+            utc +
+            offsetHours * 60 * 60 * 1000
         );
 
 
-        /* =====================================================
-           AUTHICATION SUCCESSFUL
-        ===================================================== */
+    let hours =
+        converted.getHours();
 
-        function startAuthSuccessSequence() {
+    const minutes =
+        String(
+            converted.getMinutes()
+        ).padStart(2, "0");
 
-            /*
-             * Only show this after
-             * the loading bar hits 100%.
-             */
-
-            statusText.style.display =
-                "block";
-
-
-            /*
-             * Random 2-5 second delay.
-             */
-
-            const authDelay =
-                randomDelay(
-                    2000,
-                    5000
-                );
+    const seconds =
+        String(
+            converted.getSeconds()
+        ).padStart(2, "0");
 
 
-            setTimeout(() => {
-
-                /*
-                 * Change to LOADING WORLD.
-                 */
-
-                statusText.textContent =
-                    "LOADING WORLD";
+    const period =
+        hours >= 12
+            ? "PM"
+            : "AM";
 
 
-                /*
-                 * Another random
-                 * 2-5 second delay.
-                 */
+    hours =
+        hours % 12;
 
-                const worldDelay =
-                    randomDelay(
-                        2000,
-                        5000
-                    );
+    if (hours === 0) {
+        hours = 12;
+    }
 
 
-                setTimeout(() => {
+    return (
+        String(hours).padStart(2, "0") +
+        ":" +
+        minutes +
+        ":" +
+        seconds +
+        " " +
+        period
+    );
 
-                    enterWebsite();
-
-                }, worldDelay);
+}
 
 
-            }, authDelay);
+/* =====================================================
+   UPDATE CLOCKS
+===================================================== */
+
+function updateClocks() {
+
+    const now =
+        new Date();
+
+
+    document.getElementById(
+        "estClock"
+    ).textContent =
+        formatClock(
+            now,
+            -5
+        );
+
+
+    document.getElementById(
+        "cstClock"
+    ).textContent =
+        formatClock(
+            now,
+            -6
+        );
+
+}
+
+
+updateClocks();
+
+
+setInterval(
+    updateClocks,
+    1000
+);
+
+
+/* =====================================================
+   MATRIX
+===================================================== */
+
+const matrix =
+    document.getElementById(
+        "matrix"
+    );
+
+const characters =
+    "01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&@";
+
+
+for (
+    let i = 0;
+    i < 45;
+    i++
+) {
+
+    const line =
+        document.createElement(
+            "div"
+        );
+
+    line.className =
+        "matrix-line";
+
+    let text = "";
+
+
+    for (
+        let j = 0;
+        j < 40;
+        j++
+    ) {
+
+        text +=
+            characters[
+                Math.floor(
+                    Math.random() *
+                    characters.length
+                )
+            ];
+
+    }
+
+
+    line.textContent =
+        text;
+
+
+    line.style.left =
+        Math.random() * 100 + "%";
+
+
+    line.style.animationDuration =
+        4 +
+        Math.random() * 8 +
+        "s";
+
+
+    line.style.animationDelay =
+        Math.random() * 5 +
+        "s";
+
+
+    matrix.appendChild(
+        line
+    );
+
+}
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const logs =
+    document.getElementById(
+        "logs"
+    );
+
+const roomIDElement =
+    document.getElementById(
+        "sessionID"
+    );
+
+const statusText =
+    document.getElementById(
+        "statusText"
+    );
+
+const bar =
+    document.getElementById(
+        "loading-bar"
+    );
+
+const percent =
+    document.getElementById(
+        "percent"
+    );
+
+const intro =
+    document.getElementById(
+        "intro"
+    );
+
+const website =
+    document.getElementById(
+        "website"
+    );
+
+
+/* =====================================================
+   CREATE UNITY CONSOLE LOG
+===================================================== */
+
+function createConsoleLog(text) {
+
+    const entry =
+        document.createElement(
+            "div"
+        );
+
+    entry.className =
+        "console-entry";
+
+
+    /* Info icon */
+
+    const icon =
+        document.createElement(
+            "div"
+        );
+
+    icon.className =
+        "info-icon";
+
+    icon.textContent =
+        "i";
+
+
+    /* Timestamp */
+
+    const timestamp =
+        document.createElement(
+            "div"
+        );
+
+    timestamp.className =
+        "console-time";
+
+
+    const now =
+        new Date();
+
+
+    timestamp.textContent =
+        formatClock(
+            now,
+            -5
+        ) +
+        " EST / " +
+        formatClock(
+            now,
+            -6
+        ) +
+        " CST";
+
+
+    /* Message */
+
+    const message =
+        document.createElement(
+            "div"
+        );
+
+    message.className =
+        "console-message";
+
+    message.textContent =
+        text;
+
+
+    entry.appendChild(
+        icon
+    );
+
+    entry.appendChild(
+        timestamp
+    );
+
+    entry.appendChild(
+        message
+    );
+
+
+    logs.appendChild(
+        entry
+    );
+
+
+    /* Automatically keep newest log visible */
+
+    logs.scrollTop =
+        logs.scrollHeight;
+
+}
+
+
+/* =====================================================
+   BOOT SEQUENCE
+===================================================== */
+
+const bootMessages = [
+
+    {
+        text:
+            "> AUTHENTICATING USER...",
+        delay: 400
+    },
+
+    {
+        text:
+            "> AUTHENTICATION SUCCESSFUL [ OK ]",
+        delay: 500
+    },
+
+    {
+        text:
+            "> CONNECTING TO PLAYFAB...",
+        delay: 650
+    },
+
+    {
+        text:
+            "> LOGGING INTO PLAYFAB... [ OK ]",
+        delay: 600
+    },
+
+    {
+        text:
+            "> RETRIEVING PLAYER DATA... [ OK ]",
+        delay: 500
+    },
+
+    {
+        text:
+            "> CONNECTING TO PHOTON...",
+        delay: 650
+    },
+
+    {
+        text:
+            "> CONNECTED TO PHOTON MASTER SERVER [ OK ]",
+        delay: 600
+    },
+
+    {
+        text:
+            "> JOINING SERVER...",
+        delay: 650
+    },
+
+    {
+        text:
+            "> SUCCESSFULLY JOINED",
+        delay: 500,
+        joined: true
+    },
+
+    {
+        text:
+            "> SYNCHRONIZING DATA... [ OK ]",
+        delay: 500
+    },
+
+    {
+        text:
+            "> LOADING WEBSITE...",
+        delay: 700,
+        finishLoading: true
+    }
+
+];
+
+
+let messageIndex = 0;
+
+
+/* =====================================================
+   LOADING BAR
+===================================================== */
+
+let progress = 0;
+
+
+const loading =
+    setInterval(() => {
+
+        if (progress < 96) {
+
+            progress +=
+                Math.floor(
+                    Math.random() * 2
+                ) + 8;
+
+
+            if (progress > 96) {
+                progress = 96;
+            }
+
+
+            bar.style.width =
+                progress + "%";
+
+
+            percent.textContent =
+                "LOADING... " +
+                Math.floor(progress) +
+                "%";
 
         }
 
-
-        /* =====================================================
-           OPEN PERSONAL PAGE
-        ===================================================== */
-
-        function enterWebsite() {
-
-            intro.style.opacity =
-                "0";
+    }, 700);
 
 
-            intro.style.transform =
-                "scale(1.03)";
+/* =====================================================
+   BOOT MESSAGE
+===================================================== */
+
+function addBootMessage() {
+
+    if (
+        messageIndex >=
+        bootMessages.length
+    ) {
+
+        return;
+
+    }
 
 
-            setTimeout(() => {
-
-                intro.style.display =
-                    "none";
-
-
-                website.style.display =
-                    "block";
+    const message =
+        bootMessages[
+            messageIndex
+        ];
 
 
-                document.body.style.overflow =
-                    "auto";
+    createConsoleLog(
+        message.text
+    );
 
-            }, 1000);
 
-        }
+    /* =================================================
+       ROOM ID
+    ================================================= */
 
-    </script>
+    if (
+        message.joined
+    ) {
+
+        roomIDElement.textContent =
+            randomSixDigitNumber();
+
+    }
+
+
+    /* =================================================
+       FINISH LOADING
+    ================================================= */
+
+    if (
+        message.finishLoading
+    ) {
+
+        clearInterval(
+            loading
+        );
+
+
+        progress = 100;
+
+
+        bar.style.width =
+            "100%";
+
+
+        percent.textContent =
+            "SYSTEM READY — 100%";
+
+
+        startAuthSuccessSequence();
+
+    }
+
+
+    messageIndex++;
+
+
+    /* =================================================
+       RANDOM DELAY BETWEEN LOGS
+    ================================================= */
+
+    if (
+        !message.finishLoading
+    ) {
+
+        const nextDelay =
+            message.delay +
+            randomDelay(
+                300,
+                1200
+            );
+
+
+        setTimeout(
+            addBootMessage,
+            nextDelay
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   START BOOT
+===================================================== */
+
+setTimeout(
+    addBootMessage,
+    randomDelay(
+        300,
+        1000
+    )
+);
+
+
+/* =====================================================
+   AUTHICATION SUCCESSFUL
+===================================================== */
+
+function startAuthSuccessSequence() {
+
+    statusText.style.display =
+        "block";
+
+
+    const authDelay =
+        randomDelay(
+            2000,
+            5000
+        );
+
+
+    setTimeout(() => {
+
+        statusText.textContent =
+            "LOADING WORLD";
+
+
+        const worldDelay =
+            randomDelay(
+                2000,
+                5000
+            );
+
+
+        setTimeout(() => {
+
+            enterWebsite();
+
+        }, worldDelay);
+
+
+    }, authDelay);
+
+}
+
+
+/* =====================================================
+   ENTER WEBSITE
+===================================================== */
+
+function enterWebsite() {
+
+    intro.style.opacity =
+        "0";
+
+    intro.style.transform =
+        "scale(1.03)";
+
+
+    setTimeout(() => {
+
+        intro.style.display =
+            "none";
+
+
+        website.style.display =
+            "block";
+
+
+        document.body.style.overflow =
+            "auto";
+
+    }, 1000);
+
+}
+
+</script>
 
 </body>
 </html>
