@@ -1,0 +1,2880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My project (6) - CyanClutch - Android - Unity 2022.3.62f3</title>
+
+    <style>
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            background: #000;
+            color: #00ffff;
+            font-family: "Courier New", monospace;
+            overflow: hidden;
+        }
+
+
+        /* =====================================================
+           HACKER INTRO
+        ===================================================== */
+
+        #intro {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            padding: 30px;
+            overflow: hidden;
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+            #intro::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                background: repeating-linear-gradient( to bottom, rgba(0,255,255,0.025) 0px, rgba(0,255,255,0.025) 1px, transparent 1px, transparent 4px );
+            }
+
+
+        /* =====================================================
+           MATRIX
+        ===================================================== */
+
+        #matrix {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            opacity: .10;
+            pointer-events: none;
+        }
+
+        .matrix-line {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 14px;
+            color: #00ffff;
+            animation: matrixFall linear infinite;
+        }
+
+        @keyframes matrixFall {
+            from {
+                transform: translateY(-100vh);
+            }
+
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+
+        /* =====================================================
+           TERMINAL
+        ===================================================== */
+
+        .terminal {
+            position: relative;
+            z-index: 2;
+            width: min(1000px, 94vw);
+            height: 100%;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+
+        /* =====================================================
+           TERMINAL HEADER
+        ===================================================== */
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #00ffff;
+            font-size: 13px;
+            margin-bottom: 12px;
+            opacity: .85;
+        }
+
+        .terminal-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #00ffff;
+            box-shadow: 0 0 8px #00ffff;
+        }
+
+
+        /* =====================================================
+           LOGS
+        ===================================================== */
+
+        .logs {
+            min-height: 210px;
+            max-height: 310px;
+            overflow: hidden;
+            padding: 5px 0;
+        }
+
+        .line {
+            margin: 8px 0;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff, 0 0 10px rgba(0,255,255,.5);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .log-time {
+            color: #4f8585;
+            margin-right: 8px;
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        .big {
+            text-align: center;
+            font-size: clamp(19px, 3vw, 34px);
+            font-weight: bold;
+            letter-spacing: 4px;
+            margin: 20px 0 10px;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff, 0 0 15px #00ffff, 0 0 30px #00ffff;
+            animation: glitch 2s infinite;
+        }
+
+        @keyframes glitch {
+
+            0%, 90%, 100% {
+                transform: translate(0);
+            }
+
+            92% {
+                transform: translate(-3px, 2px);
+            }
+
+            94% {
+                transform: translate(3px, -2px);
+            }
+
+            96% {
+                transform: translate(-2px, 0);
+            }
+        }
+
+
+        /* =====================================================
+           WELCOME
+        ===================================================== */
+
+        .welcome {
+            text-align: center;
+            margin-top: 8px;
+            color: #00ffff;
+            font-size: 13px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: #00ffff;
+            vertical-align: middle;
+            animation: blink .7s infinite;
+        }
+
+        @keyframes blink {
+
+            50% {
+                opacity: .2;
+            }
+        }
+
+
+        /* =====================================================
+           ROOM ID
+        ===================================================== */
+
+        .session {
+            text-align: center;
+            margin-top: 12px;
+            color: #00ffff;
+            opacity: .85;
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           LOADING
+        ===================================================== */
+
+        .loading-container {
+            width: min(700px, 90%);
+            margin: 25px auto;
+        }
+
+        .loading-border {
+            border: 2px solid #00ffff;
+            padding: 5px;
+            box-shadow: 0 0 10px rgba(0,255,255,.4), inset 0 0 10px rgba(0,255,255,.1);
+        }
+
+        #loading-bar {
+            width: 0%;
+            height: 24px;
+            background: #00ffff;
+            box-shadow: 0 0 10px #00ffff, 0 0 25px #00ffff;
+            transition: width .25s ease;
+        }
+
+        #percent {
+            text-align: center;
+            margin-top: 10px;
+            color: #00ffff;
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           APPLICATION
+        ===================================================== */
+
+        #website {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: radial-gradient( circle at 50% 0%, #06333a 0%, #07171a 35%, #05090a 100% );
+            color: #d9ffff;
+            font-family: "Segoe UI", Arial, sans-serif;
+            overflow: hidden;
+        }
+
+
+        /* =====================================================
+           APP TOP BAR
+        ===================================================== */
+
+        .app-topbar {
+            height: 42px;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            background: rgba(4,18,21,.95);
+            border-bottom: 1px solid rgba(0,255,255,.22);
+            box-shadow: 0 2px 15px rgba(0,255,255,.06);
+            user-select: none;
+        }
+
+        .app-name {
+            font-weight: 700;
+            color: #00ffff;
+            letter-spacing: 1px;
+            margin-right: 28px;
+        }
+
+        .app-menu {
+            color: #91bfc2;
+            font-size: 12px;
+            margin-right: 22px;
+            cursor: pointer;
+        }
+
+            .app-menu:hover {
+                color: #00ffff;
+            }
+
+        .app-status {
+            margin-left: auto;
+            color: #00ffff;
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           APP TOOLBAR
+        ===================================================== */
+
+        .app-toolbar {
+            height: 38px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            background: rgba(5,25,28,.9);
+            border-bottom: 1px solid rgba(0,255,255,.14);
+        }
+
+        .tool {
+            width: 31px;
+            height: 27px;
+            margin-right: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0,255,255,.12);
+            background: rgba(0,255,255,.035);
+            color: #79aeb2;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+            .tool:hover {
+                color: #00ffff;
+                background: rgba(0,255,255,.10);
+                border-color: rgba(0,255,255,.35);
+            }
+
+
+        /* =====================================================
+           MAIN APPLICATION LAYOUT
+        ===================================================== */
+
+        .app-main {
+            height: calc(100vh - 80px);
+            display: grid;
+            grid-template-columns: 250px minmax(300px, 1fr) 300px;
+            grid-template-rows: minmax(300px, 1fr) 210px;
+        }
+
+
+        /* =====================================================
+           PANELS
+        ===================================================== */
+
+        .panel {
+            background: rgba(5,17,19,.88);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            height: 31px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            background: rgba(10,31,34,.95);
+            border-bottom: 1px solid rgba(0,255,255,.12);
+            color: #a6d0d2;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .4px;
+        }
+
+
+        /* =====================================================
+           HIERARCHY
+        ===================================================== */
+
+        .hierarchy {
+            grid-row: 1 / 3;
+            border-right: 1px solid rgba(0,255,255,.14);
+        }
+
+        .hierarchy-content {
+            padding: 8px 5px;
+            overflow-y: auto;
+            height: calc(100% - 31px);
+        }
+
+        .tree-item {
+            padding: 7px 9px;
+            color: #91b8bb;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: .12s;
+        }
+
+            .tree-item:hover {
+                background: rgba(0,255,255,.07);
+                color: #d9ffff;
+            }
+
+            .tree-item.selected {
+                background: rgba(0,255,255,.13);
+                color: #00ffff;
+                box-shadow: inset 2px 0 #00ffff;
+            }
+
+        .tree-child {
+            padding-left: 27px;
+        }
+
+        .tree-arrow {
+            display: inline-block;
+            width: 15px;
+            color: #527d80;
+        }
+
+        .tree-section {
+            margin-top: 15px;
+            padding: 5px 9px;
+            color: #477376;
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+
+
+        /* =====================================================
+           MAIN WINDOW
+        ===================================================== */
+
+        .main-window {
+            position: relative;
+            background: radial-gradient( circle at center, rgba(0,255,255,.035), transparent 60% );
+            border-right: 1px solid rgba(0,255,255,.14);
+            overflow: hidden;
+        }
+
+        .main-tabs {
+            height: 31px;
+            display: flex;
+            background: rgba(7,25,28,.95);
+            border-bottom: 1px solid rgba(0,255,255,.12);
+        }
+
+        .main-tab {
+            padding: 8px 17px;
+            font-size: 11px;
+            color: #638b8e;
+            cursor: pointer;
+        }
+
+            .main-tab.active {
+                color: #00ffff;
+                background: rgba(0,255,255,.05);
+                border-bottom: 2px solid #00ffff;
+            }
+
+
+        /* =====================================================
+           MAIN CONTENT
+        ===================================================== */
+
+        .main-content {
+            position: absolute;
+            top: 31px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .content-title {
+            font-size: 26px;
+            color: #00ffff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(0,255,255,.3);
+        }
+
+        .content-subtitle {
+            color: #67999c;
+            font-size: 12px;
+            margin-bottom: 25px;
+        }
+
+        .content-card {
+            border: 1px solid rgba(0,255,255,.14);
+            background: rgba(0,255,255,.025);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+            .content-card h3 {
+                color: #00ffff;
+                font-size: 13px;
+                margin-top: 0;
+            }
+
+            .content-card p {
+                color: #9abfc1;
+                font-size: 13px;
+                line-height: 1.7;
+            }
+
+
+        /* =====================================================
+           YOUTUBE
+        ===================================================== */
+
+        .youtube-frame {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 16 / 9;
+            border: 1px solid rgba(0,255,255,.25);
+            background: #020708;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px auto 20px;
+        }
+
+        .youtube-placeholder {
+            text-align: center;
+            color: #547e81;
+            font-size: 12px;
+        }
+
+            .youtube-placeholder strong {
+                display: block;
+                color: #00ffff;
+                font-size: 18px;
+                margin-bottom: 8px;
+            }
+
+
+        /* =====================================================
+           INSPECTOR
+        ===================================================== */
+
+        .inspector {
+            overflow-y: auto;
+        }
+
+        .inspector-content {
+            padding: 12px;
+        }
+
+        .inspector-object {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0,255,255,.13);
+            background: rgba(0,255,255,.035);
+            color: #00ffff;
+            font-size: 13px;
+        }
+
+        .inspector-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0,255,255,.3);
+            color: #00ffff;
+            background: rgba(0,255,255,.06);
+            overflow: hidden;
+        }
+
+        .inspector-field {
+            margin-bottom: 15px;
+        }
+
+        .field-label {
+            color: #5d8b8e;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            margin-bottom: 5px;
+        }
+
+        .field-value {
+            padding: 8px;
+            background: rgba(0,0,0,.25);
+            border: 1px solid rgba(0,255,255,.10);
+            color: #9bc5c7;
+            font-size: 11px;
+            word-break: break-word;
+        }
+
+        .empty-inspector {
+            padding: 30px 10px;
+            text-align: center;
+            color: #41676a;
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           PROJECT / FRIENDS
+        ===================================================== */
+
+        .project {
+            grid-column: 2 / 4;
+            border-top: 1px solid rgba(0,255,255,.14);
+        }
+
+        .project-content {
+            height: calc(100% - 31px);
+            padding: 12px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .friend {
+            flex: 0 0 105px;
+            height: 125px;
+            border: 1px solid rgba(0,255,255,.13);
+            background: rgba(0,255,255,.025);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: .15s ease;
+            border-radius: 3px;
+        }
+
+            .friend:hover {
+                background: rgba(0,255,255,.09);
+                border-color: rgba(0,255,255,.4);
+                transform: translateY(-2px);
+            }
+
+            .friend.selected {
+                background: rgba(0,255,255,.12);
+                border-color: #00ffff;
+                box-shadow: 0 0 15px rgba(0,255,255,.12);
+            }
+
+        .friend-icon {
+            width: 52px;
+            height: 52px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(0,255,255,.3);
+            background: rgba(0,255,255,.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00ffff;
+            font-size: 22px;
+            overflow: hidden;
+        }
+
+            .friend-icon img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+
+        .friend-name {
+            color: #9bc5c7;
+            font-size: 10px;
+            text-align: center;
+            max-width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+
+        /* =====================================================
+           STATUS BAR
+        ===================================================== */
+
+        .statusbar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 20px;
+            background: rgba(4,18,21,.98);
+            border-top: 1px solid rgba(0,255,255,.15);
+            display: flex;
+            align-items: center;
+            padding: 0 9px;
+            color: #4f777a;
+            font-size: 10px;
+        }
+
+        .status-online {
+            color: #00ffff;
+        }
+
+        .status-time {
+            margin-left: auto;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .app-main {
+                grid-template-columns: 190px 1fr;
+                grid-template-rows: 1fr 180px;
+            }
+
+            .inspector {
+                display: none;
+            }
+
+            .project {
+                grid-column: 2;
+            }
+        }
+    
+/* Discord friends rendered as Unity Project > Assets > Friends assets */
+#unityFriendsContainer{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;overflow:auto;min-height:70px}
+#unityFriendsContainer .friend{flex:0 0 72px;width:72px;height:72px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;cursor:pointer;border-radius:2px;padding:2px}
+#unityFriendsContainer .friend:hover{background:#3b3b3b;border:1px solid #555;transform:none}
+#unityFriendsContainer .friend.selected{background:#2f5f8f;border:1px solid #5b9bd5;box-shadow:none}
+#unityFriendsContainer .friend-icon{width:48px;height:48px;margin:0 0 4px;border:1px solid #555;background:#444;color:#bbb;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#unityFriendsContainer .friend-icon img{width:100%;height:100%;object-fit:cover;display:block}
+#unityFriendsContainer .friend-name{color:#c9c9c9;font-size:10px;text-align:center;max-width:68px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#unityFriendsContainer .friend-loading{color:#aaa;font-size:11px;padding:8px}
+
+</style>
+<style id="embedded-unity-editor-css">
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:"Segoe UI",Arial,sans-serif;font-size:12px;color:#c9c9c9;background:#1e1e1e}
+button{font:inherit;color:inherit}
+#unity{width:100vw;height:100vh;display:grid;grid-template-rows:42px 29px 1fr;background:#1e1e1e}
+.titlebar{position:relative;background:#f1f1f1;color:#171717;display:flex;align-items:center;border-bottom:1px solid #aaa;overflow:visible;z-index:5000}
+.title{padding-left:7px;font-size:12px;white-space:nowrap}
+.win-controls{margin-left:auto;height:100%;display:flex}
+.win-controls span{width:46px;display:grid;place-items:center;font-size:14px}
+.win-controls span:last-child{font-size:16px}
+.menu-row{position:absolute;left:0;right:0;bottom:0;height:19px;display:flex;align-items:stretch;z-index:6000}
+.menu-row img{height:19px;display:block;image-rendering:auto}
+.menu-row .menu-hit{cursor:pointer}
+.toolbar{background:#1b1b1b;border-bottom:1px solid #111;display:flex;align-items:center;position:relative}
+.toolbar img{height:29px;display:block}
+.tb{cursor:pointer;display:flex;align-items:center;height:29px}
+.tb:hover{filter:brightness(1.18)}
+.toolbar .spacer{flex:1}
+.dock{min-width:0;min-height:0;display:grid;grid-template-columns:23% 1fr 24%;grid-template-rows:1fr 31%;gap:1px;background:#101010}
+.panel{min-width:0;min-height:0;background:#303030;overflow:hidden}
+.panel-head{height:27px;background:#292929;border-bottom:1px solid #151515;display:flex;align-items:center;padding:0 7px;color:#bbb}
+.panel-head .dots{margin-left:auto;color:#777;letter-spacing:2px}
+.hierarchy{grid-row:1/3}
+.inspector{grid-column:3;grid-row:1/3}
+.center{grid-column:2;grid-row:1;display:flex;flex-direction:column}
+.center-tabs{height:39px;background:#2b2b2b;border-bottom:1px solid #151515;display:flex;flex-direction:column}
+.tabrow{height:20px;display:flex;align-items:stretch}
+.tabrow img{height:20px;display:block}
+.tab{cursor:pointer}.tab.active{filter:brightness(1.08)}
+.subtabs{height:19px;display:flex}
+.subtabs img{height:19px;display:block}
+.viewport{flex:1;min-height:0;background:linear-gradient(#7794ba 0%,#bfe1ed 44%,#f2f6f4 51%,#77716e 54%,#69645f 100%);position:relative}
+.viewport .watermark{position:absolute;left:10px;top:8px;color:rgba(255,255,255,.55);font-size:11px}
+.project{grid-column:2;grid-row:2;display:flex;flex-direction:column}
+.project-body{display:grid;grid-template-columns:150px 1fr;height:calc(100% - 27px);min-height:0}
+.project-tree{border-right:1px solid #181818;padding-top:3px;overflow:auto}
+.tree-row{height:16px;line-height:16px;padding-left:9px;white-space:nowrap}
+.tree-row:hover,.tree-row.selected{background:#3f3f3f}
+.tree-row.selected{color:#fff}
+.tree-row.indent{padding-left:22px}
+.assets{padding:7px;overflow:auto;background:#303030}
+.asset-grid{display:flex;gap:14px;align-items:flex-start}
+.asset{width:58px;text-align:center;cursor:pointer}
+.asset-icon{width:42px;height:42px;margin:auto;background:#eee;border-radius:2px;display:grid;place-items:center;color:#333;font-size:24px;font-weight:bold}
+.asset-icon.cube{background:#ddd;clip-path:polygon(50% 0,100% 24%,100% 76%,50% 100%,0 76%,0 24%);font-size:0}
+.asset-name{margin-top:3px;color:#c5c5c5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inspector-body{padding:7px;overflow:auto;height:calc(100% - 27px)}
+.object{display:flex;gap:7px;align-items:center;height:35px;margin-bottom:7px}
+.object-icon{width:28px;height:28px;background:#555;border:1px solid #666;display:grid;place-items:center}
+.object-name{font-size:12px}
+.toggle{margin-left:auto}
+.section{border-top:1px solid #181818;margin:5px -7px 0;padding:5px 7px 8px}
+.section-title{font-weight:600;color:#ddd;margin-bottom:6px}
+.field{display:grid;grid-template-columns:1fr 1fr;align-items:center;min-height:22px}
+.field label{color:#aaa}
+input,select{width:100%;height:20px;background:#252525;border:1px solid #151515;color:#ccc;padding:1px 4px}
+.checkbox{width:13px;height:13px}
+.component-bar{height:24px;background:#3a3a3a;border:1px solid #222;display:flex;align-items:center;justify-content:center;margin-top:9px}
+.bottom-tabs{height:27px;display:flex;align-items:center;gap:1px}
+.bottom-tabs span{height:27px;padding:6px 9px;background:#2b2b2b;cursor:pointer}
+.bottom-tabs span.active{background:#333;color:#eee}
+.bottom-search{margin-left:auto;padding-right:5px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#242424}
+::-webkit-scrollbar-thumb{background:#4b4b4b;border:2px solid #242424}
+.image-asset{background:transparent!important;overflow:hidden}.image-asset img{width:100%;height:100%;object-fit:contain;display:block}\n
+/* === Embedded Unity editor: loaded by the main site === */
+#unity{display:none;position:fixed;inset:0;z-index:9000;width:100vw;height:100vh;}
+#unity.is-loaded{display:grid;}
+body.unity-active{overflow:hidden!important;}
+</style>
+
+<style>
+/* Scene viewport must be a real editor viewport. */
+#sceneViewport,.scene-viewport,#scene { position:relative!important; overflow:hidden!important; }
+.scene-fly-canvas { z-index:2; }
+</style>
+<style id="clutch-server-check-css">
+#clutchServerLogin{display:none;margin-top:12px;padding:10px 14px;border:1px solid #555;background:#171717;color:#cfcfcf;font:12px "Segoe UI",Tahoma,Arial,sans-serif}
+#clutchServerLogin.visible{display:block}
+#clutchServerLogin.error{border-color:#d22;background:#240909;color:#ff4040}
+#clutchServerLogin .check-title{font-weight:600;margin-bottom:4px}
+</style>
+<div id="clutchServerLogin" aria-live="assertive"><div class="check-title">CLUTCH SERVER DATA</div><div class="check-status"></div></div>
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         LOADING SCREEN
+    ===================================================== -->
+
+    <div id="intro">
+
+        <div id="matrix"></div>
+
+        <div class="terminal">
+
+            <div class="terminal-header">
+
+                <span class="terminal-dot"></span>
+
+                SYSTEM://SECURE_CONNECTION
+
+            </div>
+
+
+            <div class="logs" id="logs"></div>
+
+
+            <div class="big"
+                 id="statusText"
+                 style="display:none;">
+                AUTHICATION SUCCESSFUL
+            </div>
+
+
+            <div class="welcome">
+
+                &gt; WELCOME TO MY DOMAIN
+
+                <span class="cursor"></span>
+
+            </div>
+
+
+            <div class="session">
+
+                ROOM ID:
+                <span id="sessionID">
+                    NOT CONNECTED
+                </span>
+
+            </div>
+
+
+            <div class="loading-container">
+
+                <div class="loading-border">
+
+                    <div id="loading-bar"></div>
+
+                </div>
+
+                <div id="percent">
+                    INITIALIZING... 0%
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PERSONAL APPLICATION
+    ===================================================== -->
+
+    <div id="website">
+
+
+        <div class="app-topbar">
+
+            <div class="app-name">
+                MY APPLICATION
+            </div>
+
+            <div class="app-menu">
+                File
+            </div>
+
+            <div class="app-menu">
+                Projects
+            </div>
+
+            <div class="app-menu">
+                Settings
+            </div>
+
+            <div class="app-menu">
+                About
+            </div>
+
+            <div class="app-status">
+                ● ONLINE
+            </div>
+
+        </div>
+
+
+        <div class="app-toolbar">
+
+            <div class="tool">
+                ◀
+            </div>
+
+            <div class="tool">
+                ▶
+            </div>
+
+            <div class="tool">
+                ↻
+            </div>
+
+            <div class="tool">
+                +
+            </div>
+
+            <div class="tool">
+                ⌕
+            </div>
+
+        </div>
+
+
+        <div class="app-main">
+
+
+            <!-- =================================================
+                 HIERARCHY
+            ================================================== -->
+
+            <div class="panel hierarchy">
+
+                <div class="panel-header">
+                    HIERARCHY
+                </div>
+
+
+                <div class="hierarchy-content">
+
+
+                    <div class="tree-item"
+                         data-section="home">
+                        <span class="tree-arrow">▼</span>
+                        MyApplication
+                    </div>
+
+
+                    <div class="tree-item tree-child"
+                         data-section="bio">
+                        <span class="tree-arrow">•</span>
+                        Bio
+                    </div>
+
+
+                    <div class="tree-item tree-child"
+                         data-section="games">
+                        <span class="tree-arrow">•</span>
+                        Games
+                    </div>
+
+
+                    <div class="tree-item tree-child"
+                         data-section="hobbies">
+                        <span class="tree-arrow">•</span>
+                        Hobbies
+                    </div>
+
+
+                    <div class="tree-section">
+                        INFORMATION
+                    </div>
+
+
+                    <div class="tree-item tree-child"
+                         data-section="projects">
+                        <span class="tree-arrow">•</span>
+                        Projects
+                    </div>
+
+
+                    <div class="tree-item tree-child"
+                         data-section="socials">
+                        <span class="tree-arrow">•</span>
+                        Socials
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MAIN WINDOW
+            ================================================== -->
+
+            <div class="main-window">
+
+
+                <div class="main-tabs">
+
+                    <div class="main-tab active">
+                        Main
+                    </div>
+
+                    <div class="main-tab">
+                        Preview
+                    </div>
+
+                </div>
+
+
+                <div class="main-content"
+                     id="mainContent">
+
+                    <div class="content-title">
+                        Welcome
+                    </div>
+
+                    <div class="content-subtitle">
+                        MY PERSONAL APPLICATION
+                    </div>
+
+
+                    <div class="youtube-frame">
+
+                        <div class="youtube-placeholder">
+
+                            <strong>
+                                YOUTUBE PREVIEW
+                            </strong>
+
+                            Your YouTube intro
+                            will appear here.
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="content-card">
+
+                        <h3>
+                            SYSTEM STATUS
+                        </h3>
+
+                        <p>
+                            Connection established.
+                            Application loaded successfully.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 INSPECTOR
+            ================================================== -->
+
+            <div class="panel inspector">
+
+                <div class="panel-header">
+                    INSPECTOR
+                </div>
+
+
+                <div class="inspector-content"
+                     id="inspectorContent">
+
+                    <div class="empty-inspector">
+
+                        Select something from the
+                        Hierarchy or Project window.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 PROJECT / FRIENDS
+            ================================================== -->
+
+            <div class="panel project">
+
+                <div class="panel-header">
+                    PROJECT / FRIENDS
+                </div>
+
+
+                <div class="project-content"
+                     id="legacyFriendsContainer">
+
+                    <div style="
+                        color:#00ffff;
+                        padding:15px;
+                        font-size:11px;
+                    ">
+                        LOADING DISCORD FRIENDS...
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- STATUS BAR -->
+
+        <div class="statusbar">
+
+            <span class="status-online">
+                ● ONLINE
+            </span>
+
+            <span style="margin-left:15px;">
+                APPLICATION READY
+            </span>
+
+            <span class="status-time"
+                  id="websiteClock">
+                --
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+
+        /* =====================================================
+           RANDOM ROOM ID
+        ===================================================== */
+
+        function randomSixDigitNumber() {
+
+            return Math.floor(
+                100000 +
+                Math.random() * 900000
+            );
+
+        }
+
+
+        /* =====================================================
+           RANDOM DELAY
+        ===================================================== */
+
+        function randomDelay(min, max) {
+
+            return Math.floor(
+                Math.random() *
+                (max - min + 1)
+            ) + min;
+
+        }
+
+
+        /* =====================================================
+           TIME
+        ===================================================== */
+
+        function formatTime(date, offset) {
+
+            const utc =
+                date.getTime() +
+                date.getTimezoneOffset() * 60000;
+
+            const local =
+                new Date(
+                    utc +
+                    offset * 60 * 60 * 1000
+                );
+
+            let hours =
+                local.getHours();
+
+            const minutes =
+                String(
+                    local.getMinutes()
+                ).padStart(2, "0");
+
+            const seconds =
+                String(
+                    local.getSeconds()
+                ).padStart(2, "0");
+
+            const period =
+                hours >= 12
+                    ? "PM"
+                    : "AM";
+
+            hours =
+                hours % 12;
+
+            if (hours === 0) {
+                hours = 12;
+            }
+
+            return (
+                String(hours).padStart(2, "0") +
+                ":" +
+                minutes +
+                ":" +
+                seconds +
+                " " +
+                period
+            );
+
+        }
+
+
+        /* =====================================================
+           LOG TIME
+        ===================================================== */
+
+        function getLogTime() {
+
+            const now =
+                new Date();
+
+            return (
+                formatTime(now, -5) +
+                " EST / " +
+                formatTime(now, -6) +
+                " CST"
+            );
+
+        }
+
+
+        /* =====================================================
+           MATRIX
+        ===================================================== */
+
+        const matrix =
+            document.getElementById("matrix");
+
+        const characters =
+            "01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&@";
+
+
+        for (
+            let i = 0;
+            i < 45;
+            i++
+        ) {
+
+            const line =
+                document.createElement("div");
+
+            line.className =
+                "matrix-line";
+
+            let text = "";
+
+            for (
+                let j = 0;
+                j < 40;
+                j++
+            ) {
+
+                text +=
+                    characters[
+                    Math.floor(
+                        Math.random() *
+                        characters.length
+                    )
+                    ];
+
+            }
+
+            line.textContent =
+                text;
+
+            line.style.left =
+                Math.random() * 100 + "%";
+
+            line.style.animationDuration =
+                4 +
+                Math.random() * 8 +
+                "s";
+
+            line.style.animationDelay =
+                Math.random() * 5 +
+                "s";
+
+            matrix.appendChild(line);
+
+        }
+
+
+        /* =====================================================
+           ELEMENTS
+        ===================================================== */
+
+        const logs =
+            document.getElementById("logs");
+
+        const roomID =
+            document.getElementById("sessionID");
+
+        const statusText =
+            document.getElementById("statusText");
+
+        const bar =
+            document.getElementById("loading-bar");
+
+        const percent =
+            document.getElementById("percent");
+
+        const intro =
+            document.getElementById("intro");
+
+        const website =
+            document.getElementById("website");
+
+
+        /* =====================================================
+           BOOT MESSAGES
+        ===================================================== */
+
+        const bootMessages = [
+
+            {
+                text: "> AUTHENTICATING USER...",
+                delay: 400
+            },
+
+            {
+                text: "> AUTHENTICATION SUCCESSFUL [ OK ]",
+                delay: 500
+            },
+
+            {
+                text: "> CONNECTING TO PLAYFAB...",
+                delay: 650
+            },
+
+            {
+                text: "> LOGGING INTO PLAYFAB... [ OK ]",
+                delay: 600
+            },
+
+            {
+                text: "> RETRIEVING PLAYER DATA... [ OK ]",
+                delay: 500
+            },
+
+            {
+                text: "> CONNECTING TO PHOTON...",
+                delay: 650,
+                clutchCheck: true
+            },
+
+            {
+                text: "> CONNECTED TO PHOTON MASTER SERVER [ OK ]",
+                delay: 600
+            },
+
+            {
+                text: "> JOINING SERVER...",
+                delay: 650
+            },
+
+            {
+                text: "> SUCCESSFULLY JOINED",
+                delay: 500,
+                joined: true
+            },
+
+            {
+                text: "> SYNCHRONIZING DATA... [ OK ]",
+                delay: 500
+            },
+
+            {
+                text: "> LOADING WEBSITE...",
+                delay: 700,
+                finishLoading: true
+            }
+
+        ];
+
+
+        let messageIndex = 0;
+
+
+        /* =====================================================
+           CREATE LOG
+        ===================================================== */
+
+        function addLog(text) {
+
+            const line =
+                document.createElement("div");
+
+            line.className =
+                "line";
+
+
+            const time =
+                document.createElement("span");
+
+            time.className =
+                "log-time";
+
+            time.textContent =
+                "[" +
+                getLogTime() +
+                "]";
+
+
+            line.appendChild(time);
+
+            line.appendChild(
+                document.createTextNode(text)
+            );
+
+
+            logs.appendChild(line);
+
+        }
+
+
+        /* =====================================================
+           LOADING BAR
+        ===================================================== */
+
+        let progress = 0;
+
+
+        const loading =
+            setInterval(() => {
+
+                if (progress < 96) {
+
+                    progress +=
+                        Math.floor(
+                            Math.random() * 2
+                        ) + 8;
+
+
+                    if (progress > 96) {
+                        progress = 96;
+                    }
+
+
+                    bar.style.width =
+                        progress + "%";
+
+
+                    percent.textContent =
+                        "LOADING... " +
+                        progress +
+                        "%";
+
+                }
+
+            }, 700);
+
+
+        /* =====================================================
+           BOOT SEQUENCE
+        ===================================================== */
+
+        async function addBootMessage() {
+
+            if (
+                messageIndex >=
+                bootMessages.length
+            ) {
+
+                return;
+
+            }
+
+
+            const message =
+                bootMessages[
+                messageIndex
+                ];
+
+
+            addLog(
+                message.text
+            );
+
+            if (message.clutchCheck) {
+                const ok = await window.verifyClutchServerFile();
+                if (!ok) return;
+            }
+
+
+            /* ROOM ID ONLY AFTER SUCCESSFULLY JOINED */
+
+            if (
+                message.joined
+            ) {
+
+                roomID.textContent =
+                    randomSixDigitNumber();
+
+            }
+
+
+            /* LOADING FINISHED */
+
+            if (
+                message.finishLoading
+            ) {
+
+                clearInterval(
+                    loading
+                );
+
+
+                progress = 100;
+
+
+                bar.style.width =
+                    "100%";
+
+
+                percent.textContent =
+                    "SYSTEM READY — 100%";
+
+
+                startStatusSequence();
+
+
+                return;
+
+            }
+
+
+            messageIndex++;
+
+
+            setTimeout(
+                addBootMessage,
+                message.delay +
+                randomDelay(
+                    300,
+                    1200
+                )
+            );
+
+        }
+
+
+        /* =====================================================
+           START
+        ===================================================== */
+
+        setTimeout(
+            addBootMessage,
+            randomDelay(
+                300,
+                1000
+            )
+        );
+
+
+        /* =====================================================
+           AUTH → LOADING WORLD → WEBSITE
+        ===================================================== */
+
+        function startStatusSequence() {
+
+            statusText.style.display =
+                "block";
+
+
+            statusText.textContent =
+                "AUTHICATION SUCCESSFUL";
+
+
+            const authDelay =
+                randomDelay(
+                    2000,
+                    5000
+                );
+
+
+            setTimeout(() => {
+
+                statusText.textContent =
+                    "LOADING WORLD";
+
+
+                const worldDelay =
+                    randomDelay(
+                        2000,
+                        5000
+                    );
+
+
+                setTimeout(() => {
+
+                    enterWebsite();
+
+                }, worldDelay);
+
+
+            }, authDelay);
+
+        }
+
+
+        /* =====================================================
+           ENTER WEBSITE
+        ===================================================== */
+
+        function enterWebsite() {
+
+            intro.style.opacity =
+                "0";
+
+            intro.style.transform =
+                "scale(1.03)";
+
+
+            setTimeout(() => {
+
+                intro.style.display =
+                    "none";
+
+                website.style.display =
+                    "none";
+
+                const unityEditor = document.getElementById("unity");
+                if (unityEditor) {
+                    unityEditor.classList.add("is-loaded");
+                    document.body.classList.add("unity-active");
+                }
+
+                document.body.style.overflow =
+                    "hidden";
+
+
+                updateWebsiteClock();
+
+                loadDiscordFriends();
+
+            }, 1000);
+
+        }
+
+
+        /* =====================================================
+           DISCORD API
+        ===================================================== */
+
+        const DISCORD_API =
+            "https://chanfana-openapi-template.melanielpoe1966.workers.dev/friends";
+
+
+        let discordFriends = [];
+
+
+        /* =====================================================
+           LOAD DISCORD FRIENDS
+        ===================================================== */
+
+        async function loadDiscordFriends() {
+
+            const container =
+                document.getElementById(
+                    "unityFriendsContainer"
+                );
+
+
+            if (!container) {
+                return;
+            }
+
+
+            try {
+
+                container.innerHTML = `
+                        <div style="
+                            color:#00ffff;
+                            padding:15px;
+                            font-size:11px;
+                        ">
+                            LOADING DISCORD FRIENDS...
+                        </div>
+                    `;
+
+
+                const response =
+                    await fetch(
+                        DISCORD_API,
+                        {
+                            cache: "no-store"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "API returned HTTP " +
+                        response.status
+                    );
+
+                }
+
+
+                discordFriends =
+                    await response.json();
+
+
+                createFriendCards();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to load Discord friends:",
+                    error
+                );
+
+
+                container.innerHTML = `
+                        <div style="
+                            color:#00ffff;
+                            padding:15px;
+                            font-size:11px;
+                        ">
+                            FAILED TO LOAD FRIENDS
+                        </div>
+                    `;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           CREATE FRIEND CARDS AUTOMATICALLY
+        ===================================================== */
+
+        function createFriendCards() {
+
+            const container =
+                document.getElementById(
+                    "unityFriendsContainer"
+                );
+
+
+            if (!container) {
+                return;
+            }
+
+
+            container.innerHTML = "";
+
+
+            discordFriends.forEach(
+                (friend) => {
+
+                    const card =
+                        document.createElement("div");
+
+
+                    card.className =
+                        "friend";
+
+
+                    card.dataset.discordId =
+                        friend.id;
+
+
+                    /* PROFILE PICTURE */
+
+                    const icon =
+                        document.createElement("div");
+
+
+                    icon.className =
+                        "friend-icon";
+
+
+                    if (friend.avatar) {
+
+                        const image =
+                            document.createElement("img");
+
+
+                        image.src =
+                            friend.avatar;
+
+
+                        image.alt =
+                            friend.displayName ||
+                            friend.username ||
+                            "Discord User";
+
+
+                        image.loading =
+                            "lazy";
+
+
+                        icon.appendChild(
+                            image
+                        );
+
+                    } else {
+
+                        icon.textContent =
+                            "◉";
+
+                    }
+
+
+                    /* NAME */
+
+                    const name =
+                        document.createElement("div");
+
+
+                    name.className =
+                        "friend-name";
+
+
+                    name.textContent =
+                        friend.displayName ||
+                        friend.username ||
+                        "UNKNOWN";
+
+
+                    card.appendChild(
+                        icon
+                    );
+
+
+                    card.appendChild(
+                        name
+                    );
+
+
+                    /* CLICK */
+
+                    card.addEventListener(
+                        "click",
+                        () => {
+
+                            document
+                                .querySelectorAll(
+                                    ".friend"
+                                )
+                                .forEach(
+                                    other => {
+
+                                        other.classList
+                                            .remove(
+                                                "selected"
+                                            );
+
+                                    }
+                                );
+
+
+                            card.classList.add(
+                                "selected"
+                            );
+
+
+                            showDiscordFriend(
+                                friend
+                            );
+
+                        }
+                    );
+
+
+                    container.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           DISCORD FRIEND INSPECTOR
+        ===================================================== */
+
+        function showDiscordFriend(friend) {
+
+            const inspector = document.getElementById("inspectorContent");
+            if (!inspector) return;
+
+            /*
+             * Keep the Inspector useful even when the friends API adds new
+             * fields later.  Known fields get friendly names; other simple
+             * values are shown automatically under MORE INFORMATION.
+             */
+            const escapeHtml = (value) => String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+            const valueOrNA = (value) => {
+                if (value === undefined || value === null || value === "") return "N/A";
+                if (typeof value === "object") return JSON.stringify(value);
+                return escapeHtml(value);
+            };
+
+            const knownKeys = new Set([
+                "id", "username", "displayName", "avatar", "bio"
+            ]);
+
+            const extraFields = Object.entries(friend || {})
+                .filter(([key, value]) => !knownKeys.has(key) &&
+                    (typeof value !== "object" || value === null))
+                .map(([key, value]) => `
+                    <div class="inspector-field">
+                        <div class="field-label">${escapeHtml(
+                            key.replace(/([A-Z])/g, " $1")
+                                .replace(/^./, c => c.toUpperCase())
+                        )}</div>
+                        <div class="field-value">${valueOrNA(value)}</div>
+                    </div>
+                `).join("");
+
+            inspector.innerHTML = `
+                <div class="inspector-object">
+                    <div class="inspector-icon">
+                        ${friend.avatar ? `
+                            <img
+                                src="${escapeHtml(friend.avatar)}"
+                                alt=""
+                                style="width:100%;height:100%;object-fit:cover;display:block;"
+                            >
+                        ` : "◉"}
+                    </div>
+                    <div style="min-width:0;">
+                        <div style="font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                            ${valueOrNA(friend.displayName || friend.username || "UNKNOWN")}
+                        </div>
+                        <div style="font-size:10px;color:#5d8b8e;margin-top:3px;">
+                            FRIEND
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inspector-field">
+                    <div class="field-label">Username</div>
+                    <div class="field-value">${valueOrNA(friend.username)}</div>
+                </div>
+
+                <div class="inspector-field">
+                    <div class="field-label">Display Name</div>
+                    <div class="field-value">${valueOrNA(friend.displayName)}</div>
+                </div>
+
+                <div class="inspector-field">
+                    <div class="field-label">Bio</div>
+                    <div class="field-value" style="white-space:pre-wrap;">${valueOrNA(friend.bio)}</div>
+                </div>
+
+                <div class="inspector-field">
+                    <div class="field-label">Discord ID</div>
+                    <div class="field-value">${valueOrNA(friend.id)}</div>
+                </div>
+
+                <div class="inspector-field">
+                    <div class="field-label">Profile Picture</div>
+                    <div class="field-value">${friend.avatar ? "AVAILABLE" : "NOT AVAILABLE"}</div>
+                </div>
+
+                ${extraFields ? `
+                    <div style="margin:18px 0 8px;color:#00ffff;font-size:10px;letter-spacing:.8px;">
+                        MORE INFORMATION
+                    </div>
+                    ${extraFields}
+                ` : ""}
+            `;
+        }
+
+        /* =====================================================
+           HIERARCHY CONTENT
+        ===================================================== */
+
+        const sections = {
+
+            home: {
+
+                title: "Welcome",
+
+                subtitle:
+                    "MY PERSONAL APPLICATION",
+
+                content: `
+
+                        <div class="youtube-frame">
+
+                            <div class="youtube-placeholder">
+
+                                <strong>
+                                    YOUTUBE PREVIEW
+                                </strong>
+
+                                Your YouTube intro
+                                will appear here.
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="content-card">
+
+                            <h3>
+                                SYSTEM STATUS
+                            </h3>
+
+                            <p>
+                                Connection established.
+                                Application loaded successfully.
+                            </p>
+
+                        </div>
+
+                    `
+
+            },
+
+
+            bio: {
+
+                title: "Bio",
+
+                subtitle:
+                    "ABOUT ME",
+
+                content: `
+
+                        <div class="content-card">
+
+                            <h3>
+                                ABOUT ME
+                            </h3>
+
+                            <p>
+                                Hey! I'm YOUR NAME.
+                            </p>
+
+                            <p>
+                                Put your personal bio here.
+                                You can talk about yourself,
+                                your projects, interests,
+                                games, or anything else.
+                            </p>
+
+                        </div>
+
+                    `
+
+            },
+
+
+            games: {
+
+                title: "Games",
+
+                subtitle:
+                    "MY GAMES & PROJECTS",
+
+                content: `
+
+                        <div class="content-card">
+
+                            <h3>
+                                PROJECT 01
+                            </h3>
+
+                            <p>
+                                Put your first game here.
+                            </p>
+
+                        </div>
+
+
+                        <div class="content-card">
+
+                            <h3>
+                                PROJECT 02
+                            </h3>
+
+                            <p>
+                                Put your second game here.
+                            </p>
+
+                        </div>
+
+                    `
+
+            },
+
+
+            hobbies: {
+
+                title: "Hobbies",
+
+                subtitle:
+                    "THINGS I ENJOY",
+
+                content: `
+
+                        <div class="content-card">
+
+                            <h3>
+                                HOBBIES
+                            </h3>
+
+                            <p>
+                                Put your hobbies here.
+                            </p>
+
+                            <p>
+                                Gaming, coding, creating,
+                                VR, or anything else you enjoy.
+                            </p>
+
+                        </div>
+
+                    `
+
+            },
+
+
+            projects: {
+
+                title: "Projects",
+
+                subtitle:
+                    "CURRENT PROJECTS",
+
+                content: `
+
+                        <div class="content-card">
+
+                            <h3>
+                                PROJECTS
+                            </h3>
+
+                            <p>
+                                Add your projects here.
+                            </p>
+
+                        </div>
+
+                    `
+
+            },
+
+
+            socials: {
+
+                title: "Socials",
+
+                subtitle:
+                    "FIND ME ONLINE",
+
+                content: `
+
+                        <div class="content-card">
+
+                            <h3>
+                                YOUTUBE
+                            </h3>
+
+                            <p>
+                                YOUR YOUTUBE LINK
+                            </p>
+
+                        </div>
+
+
+                        <div class="content-card">
+
+                            <h3>
+                                DISCORD
+                            </h3>
+
+                            <p>
+                                YOUR DISCORD
+                            </p>
+
+                        </div>
+
+
+                        <div class="content-card">
+
+                            <h3>
+                                META
+                            </h3>
+
+                            <p>
+                                YOUR META PROFILE
+                            </p>
+
+                        </div>
+
+                    `
+
+            }
+
+        };
+
+
+        /* =====================================================
+           HIERARCHY CLICKING
+        ===================================================== */
+
+        document
+            .querySelectorAll(
+                ".tree-item[data-section]"
+            )
+            .forEach(
+                item => {
+
+                    item.addEventListener(
+                        "click",
+                        () => {
+
+                            document
+                                .querySelectorAll(
+                                    ".tree-item[data-section]"
+                                )
+                                .forEach(
+                                    other => {
+
+                                        other.classList
+                                            .remove(
+                                                "selected"
+                                            );
+
+                                    }
+                                );
+
+
+                            item.classList.add(
+                                "selected"
+                            );
+
+
+                            const section =
+                                sections[
+                                item.dataset.section
+                                ];
+
+
+                            if (!section) {
+                                return;
+                            }
+
+
+                            document.getElementById(
+                                "mainContent"
+                            ).innerHTML = `
+
+                                    <div class="content-title">
+                                        ${section.title}
+                                    </div>
+
+                                    <div class="content-subtitle">
+                                        ${section.subtitle}
+                                    </div>
+
+                                    ${section.content}
+
+                                `;
+
+
+                            inspector.innerHTML = `
+
+                                    <div class="empty-inspector">
+
+                                        ${section.title}
+                                        selected.
+
+                                    </div>
+
+                                `;
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /* =====================================================
+           WEBSITE CLOCK
+        ===================================================== */
+
+        function updateWebsiteClock() {
+
+            const clock =
+                document.getElementById(
+                    "websiteClock"
+                );
+
+
+            if (!clock) {
+                return;
+            }
+
+
+            const now =
+                new Date();
+
+
+            clock.textContent =
+                "EST " +
+                formatTime(now, -5) +
+                "  |  CST " +
+                formatTime(now, -6);
+
+        }
+
+
+        setInterval(
+            updateWebsiteClock,
+            1000
+        );
+
+
+    </script>
+
+
+<!-- Embedded Unity Editor UI. It is revealed after the main loading sequence. -->
+
+<div id="unity">
+  <div class="titlebar">
+    <div class="title">My project (6) - CyanClutch - Android - Unity 2022.3.62f3* &lt;DX11&gt;</div>
+    <div class="win-controls"><span>—</span><span>□</span><span>×</span></div>
+    <div class="menu-row" id="menus"></div>
+  </div>
+  <div class="toolbar" id="toolbar"></div>
+  <div class="dock">
+    <section class="panel hierarchy">
+      <div class="panel-head">Hierarchy <span class="dots">⋮</span></div>
+      <div style="height:25px;border-bottom:1px solid #191919;padding:2px 7px">＋　🔍 All　　↗</div>
+      <div id="hierarchy-list" style="overflow:auto;height:calc(100% - 52px)">
+        <div class="tree-row selected">⌄　CyanClutch*</div>
+        <div class="tree-row indent">◇　PhotonVRPlayer</div>
+        <div class="tree-row indent">◇　PhotonVRVoice</div>
+        <div class="tree-row indent">◇　PhotonVRManager</div>
+        <div class="tree-row indent">◇　GitHub Projects</div>
+        <div class="tree-row indent">◇　PlayfabManager</div>
+      </div>
+    </section>
+
+    <section class="panel center">
+      <div class="center-tabs">
+        <div class="tabrow" id="tabs"></div>
+        <div class="subtabs" id="subtabs"></div>
+      </div>
+      <div class="viewport" id="viewport"><div class="watermark" id="sceneWatermark">Scene</div><canvas id="sceneCanvas"></canvas><div id="n64Game"><div class="n64-shell"><div class="n64-head"><span>Super Mario 64 — Nintendo 64</span><label class="rom-btn" for="n64Rom">Load ROM</label><input id="n64Rom" type="file" accept=".z64,.n64,.v64"></div><div id="n64Display"><div id="n64Player"></div><div class="n64-error" id="n64Error"></div><div class="n64-note">Load your legally obtained SM64 .z64/.n64/.v64 ROM to play.</div></div></div></div></div>
+    </section>
+
+    <section class="panel inspector">
+      <div class="panel-head">Inspector <span class="dots">⌄　⋮</span></div>
+      <div class="inspector-body" id="inspector">
+        <div class="object"><div class="object-icon">◇</div><div class="object-name"><b>PhotonVRManager</b><br><span style="color:#888">GameObject</span></div><span class="toggle">☑</span></div>
+        <div class="section"><div class="section-title">Transform</div>
+          <div class="field"><label>Position X</label><input value="-8.044"></div>
+          <div class="field"><label>Position Y</label><input value="93.847"></div>
+          <div class="field"><label>Position Z</label><input value="-327.6"></div>
+          <div class="field"><label>Rotation X</label><input value="0"></div>
+          <div class="field"><label>Rotation Y</label><input value="0"></div>
+          <div class="field"><label>Rotation Z</label><input value="0"></div>
+          <div class="field"><label>Scale X</label><input value="1"></div>
+          <div class="field"><label>Scale Y</label><input value="1"></div>
+          <div class="field"><label>Scale Z</label><input value="1"></div>
+        </div>
+        <div class="section"><div class="section-title">Cyan Clutch Settings</div>
+          <div class="field"><label>Script</label><input value="FriendsList"></div>
+          <div style="margin:8px 0 3px;font-weight:600">Player Settings</div>
+          <div class="field"><label>Player Speed</label><input value="5"></div>
+          <div class="field"><label>Jump Height</label><input value="2"></div>
+          <div style="margin:8px 0 3px;font-weight:600">Username</div>
+          <div class="field"><label>Volume</label><input value="1"></div>
+          <div class="field"><label>Enable Voice</label><input type="checkbox" class="checkbox" checked></div>
+          <div style="margin:8px 0 3px;font-weight:600">Description</div>
+          <div class="field"><label>Room Name</label><input value="Room"></div>
+          <div class="field"><label>Max Players</label><input value="10"></div>
+          <div style="margin:8px 0 3px;font-weight:600">Role</div>
+          <div class="field"><label>Show Effects</label><input type="checkbox" class="checkbox" checked></div>
+          <div class="field"><label>Effect Intensity</label><input value="1"></div>
+          <div class="component-bar">Add Component</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel project">
+      <div class="bottom-tabs"><span class="active">▣ Project</span><span>▤ Console</span><span>⌘ Unity Version Control</span><span class="bottom-search">⌕</span></div>
+      <div class="project-body">
+        <div class="project-tree">
+          <div class="tree-row">⌄ ★ Favorites</div>
+          <div class="tree-row">⌄ 📁 Assets</div>
+          <div class="tree-row indent selected">📁 Friends</div>
+          <div class="tree-row indent">▸ 📁 Photon</div>
+          <div class="tree-row indent">▸ 📁 Resources</div>
+          <div class="tree-row indent">▸ 📁 Scripts</div>
+          <div class="tree-row indent">▸ 📁 Shaders</div>
+          <div class="tree-row indent">▸ 📁 TextMesh Pro</div>
+          <div class="tree-row indent">▸ 📁 XR</div>
+          <div class="tree-row">▸ 📦 Packages</div>
+        </div>
+        <div class="assets">
+          <div style="color:#aaa;margin-bottom:8px">Assets　›　Friends</div>
+          <div class="asset-grid" id="unityFriendsContainer">
+            <div class="friend-loading">LOADING FRIENDS...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<style>
+/* Unity menu dropdowns reproduced from the supplied recording */
+#menus{position:relative;display:flex;align-items:flex-start;height:19px;}
+.menu-btn{position:relative;height:19px;display:flex;align-items:center;cursor:pointer;}
+.menu-btn>img{height:19px!important;width:auto!important;display:block;}
+.menu-btn:hover{background:rgba(0,0,0,.08);}
+.unity-dropdown{position:absolute;top:19px;left:0;min-width:296px;background:#f4f4f4;color:#171717;border:1px solid #aaa;border-radius:0 0 3px 3px;box-shadow:0 3px 8px rgba(0,0,0,.28);padding:4px 0;z-index:10000;font-family:"Segoe UI",Arial,sans-serif;font-size:12px;display:none;}
+.menu-btn.open .unity-dropdown{display:block;}
+.ud-row{height:25px;line-height:25px;padding:0 10px 0 34px;position:relative;white-space:nowrap;}
+.ud-row:hover{background:#e7e7e7;}
+.ud-row.disabled{color:#999;}
+.ud-row.sep{height:7px;padding:0;border-top:1px solid #d2d2d2;margin:4px 7px;}
+.ud-key{position:absolute;right:12px;color:#555;}
+.ud-arrow{position:absolute;right:7px;color:#333;}
+.ud-sub{position:absolute;left:100%;top:-4px;min-width:260px;background:#f4f4f4;border:1px solid #aaa;box-shadow:3px 3px 8px rgba(0,0,0,.22);padding:4px 0;display:none;}
+.ud-row.has-sub:hover>.ud-sub{display:block;}
+
+/* Fix: Unity menu popups must extend below the title/menu bar. */
+.titlebar .menu-row{overflow:visible;}
+.menu-btn{z-index:7000;}
+.menu-btn.open{z-index:9000;}
+.unity-dropdown{z-index:99999!important;}
+
+
+/* Interactive Unity-like Scene viewport */
+#sceneCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:default}
+.viewport.scene-mode{background:#6f849e}
+.scene-help{position:absolute;left:10px;bottom:10px;padding:5px 7px;background:rgba(25,25,25,.55);color:#ddd;font:11px "Segoe UI",Arial,sans-serif;pointer-events:none;z-index:5;border:1px solid rgba(255,255,255,.12)}
+/* N64 Game viewport */
+#n64Game{position:absolute;inset:0;background:#111;display:none;z-index:20;align-items:center;justify-content:center;overflow:hidden}
+#n64Game.active{display:flex}
+#n64Game .n64-shell{width:min(100%,960px);height:min(100%,720px);display:flex;flex-direction:column;background:#111;border:1px solid #3b3b3b}
+#n64Game .n64-head{height:32px;display:flex;align-items:center;gap:8px;padding:0 8px;background:#2b2b2b;color:#bbb;font:12px "Segoe UI",Arial,sans-serif;border-bottom:1px solid #111}
+#n64Game .n64-head input{display:none}
+#n64Game .rom-btn{margin-left:auto;background:#3b3b3b;color:#ddd;border:1px solid #555;padding:4px 9px;font:11px "Segoe UI",Arial,sans-serif;cursor:pointer}
+#n64Game .rom-btn:hover{background:#484848}
+#n64Game #n64Display{flex:1;min-height:0;position:relative;background:#000}
+#n64Game #n64Display>div{width:100%!important;height:100%!important}
+#n64Game .n64-note{position:absolute;left:12px;bottom:10px;color:#777;font:11px "Segoe UI",Arial,sans-serif;pointer-events:none;z-index:3}
+#n64Game .n64-error{position:absolute;inset:0;display:none;align-items:center;justify-content:center;color:#d66;background:#111;font:12px "Segoe UI",Arial,sans-serif;padding:20px;text-align:center;z-index:10}
+
+</style>
+<script>
+const A='assets/unity/';
+const menus=[['file.png','file'],['edit.png','edit'],['assets.png','assets'],['gameobject.png','gameobject'],['component.png','component'],['services.png','services'],['jobs.png','jobs'],['tools.png','tools'],['mobile-input.png','mobile'],['window.png','window'],['help.png','help']];
+const toolbar=['account.png','cloud.png','vcs.png','play-controls.png'];
+const right=['undo.png','search.png','layers.png','layout.png'];
+const tabs=['scene-tab.png','game-tab.png','animator-tab.png','asset-store-tab.png','tabs-menu.png'];
+const subtabs=['game-mode.png','display.png','remote.png','scale.png','play-focused.png'];
+const menuData={
+file:[['New Scene','Ctrl+N'],['Open Scene','Ctrl+O'],['Open Recent Scene','',true,'recent'],['sep'],['Save','Ctrl+S'],['Save As...','Ctrl+Shift+S'],['Save As Scene Template...'],['sep'],['New Project...'],['Open Project...'],['Save Project'],['sep'],['Build Settings...','Ctrl+Shift+B'],['Build And Run','Ctrl+B'],['sep'],['Exit']],
+edit:[['Undo Clear Selection','Ctrl+Z'],['Redo','Ctrl+Y','disabled'],['Undo History','Ctrl+U'],['sep'],['Select All','Ctrl+A'],['Deselect All','Shift+D'],['Select Children','Shift+C'],['Select Prefab Root','Ctrl+Shift+R'],['Invert Selection','Ctrl+I'],['sep'],['Cut','Ctrl+X'],['Copy','Ctrl+C'],['Paste','Ctrl+V'],['Paste As Child','Ctrl+Shift+V','disabled'],['sep'],['Duplicate','Ctrl+D'],['Rename'],['Delete'],['sep'],['Frame Selected in Scene'],['Frame Selected in Window under Cursor','F'],['Lock View to Selected','Shift+F'],['sep'],['Find','Ctrl+F'],['Search','',false,'search'],['sep'],['Play','Ctrl+P'],['Pause','Ctrl+Shift+P'],['Step','Ctrl+Alt+P'],['sep'],['Sign in','','disabled'],['Sign out'],['sep'],['Selection','',false,'selection'],['Project Settings...'],['Preferences...']],
+gameobject:[['Create Empty','Ctrl+Shift+N'],['Create Empty Child','Alt+Shift+N'],['Create Empty Parent','Ctrl+Shift+G','disabled'],['sep'],['2D Object','',false,'2d'],['3D Object','',false,'3d'],['Effects','',false,'effects'],['Light','',false,'light'],['Audio','',false,'audio'],['Video','',false,'video'],['UI','',false,'ui'],['ProBuilder','',false,'probuilder'],['UI Toolkit','',false,'uitoolkit'],['Rendering','',false,'rendering'],['Volume','',false,'volume'],['XR','',false,'xr'],['Camera','',false,'camera'],['Visual Scripting Scene Variables'],['sep'],['Center On Children','','disabled'],['sep'],['Make Parent','','disabled'],['Clear Parent','','disabled'],['sep'],['Set as first sibling','Ctrl+=','disabled'],['Set as last sibling','Ctrl+-','disabled'],['Move To View','Ctrl+Alt+F','disabled'],['Align With View','Ctrl+Shift+F','disabled'],['Align View to Selected','disabled'],['Toggle Active State','Alt+Shift+A','disabled']]
+};
+function rowHtml(r){if(r[0]==='sep')return '<div class="ud-row sep"></div>';let cls='ud-row'+(r[2]==='disabled'?' disabled':'')+(r[3]?' has-sub':'');let sub=r[3]?'<div class="ud-sub"><div class="ud-row">'+r[3]+' options</div></div>':'';return '<div class="'+cls+'">'+r[0]+(r[1]?'<span class="ud-key">'+r[1]+'</span>':'')+(r[3]?'<span class="ud-arrow">›</span>':'')+sub+'</div>';}
+function buildMenus(){const e=document.getElementById('menus');menus.forEach(([f,key])=>{const b=document.createElement('span');b.className='menu-btn';b.dataset.menu=key;const im=document.createElement('img');im.src=A+f;im.alt='';b.appendChild(im);if(menuData[key]){const d=document.createElement('div');d.className='unity-dropdown';d.innerHTML=menuData[key].map(rowHtml).join('');b.appendChild(d);b.addEventListener('click',ev=>{ev.stopPropagation();document.querySelectorAll('.menu-btn.open').forEach(x=>{if(x!==b)x.classList.remove('open')});b.classList.toggle('open');});}e.appendChild(b);});}
+buildMenus();
+function put(id,arr){const e=document.getElementById(id);arr.forEach(f=>{const s=document.createElement('span');s.className='tb';const im=document.createElement('img');im.src=A+f;im.alt='';s.appendChild(im);e.appendChild(s)});}
+put('toolbar',toolbar);
+const t=document.getElementById('toolbar'); t.insertAdjacentHTML('beforeend','<span class="spacer"></span>'); put('toolbar',right);
+put('tabs',tabs); put('subtabs',subtabs);
+document.addEventListener('click',()=>document.querySelectorAll('.menu-btn.open').forEach(x=>x.classList.remove('open')));
+document.querySelectorAll('.tree-row').forEach(row=>row.addEventListener('click',()=>{document.querySelectorAll('.tree-row').forEach(x=>x.classList.remove('selected'));row.classList.add('selected');}));
+</script>
+
+
+<script>
+(function(){
+  const canvas=document.getElementById('sceneCanvas');
+  const viewport=document.getElementById('viewport');
+  const ctx=canvas.getContext('2d');
+  const sceneTab=document.querySelector('#tabs .tb:nth-child(1)');
+  const gameTab=document.querySelector('#tabs .tb:nth-child(2)');
+  if(!canvas||!ctx) return;
+
+  let dpr=window.devicePixelRatio||1;
+  let w=0,h=0;
+  const cam={x:0,y:2.2,z:8,yaw:0,pitch:-0.08};
+  const keys=new Set();
+  let rmb=false, lastX=0,lastY=0;
+  let moveSpeed=0;
+  let last=performance.now();
+
+  const objects=[
+    {x:0,y:1,z:0,s:2,kind:'cube'},
+    {x:-4,y:1,z:-5,s:2,kind:'cube'},
+    {x:5,y:1.5,z:-9,s:3,kind:'cube'},
+    {x:0,y:.5,z:-14,s:1,kind:'cube'}
+  ];
+
+  function resize(){
+    const r=canvas.getBoundingClientRect(); dpr=window.devicePixelRatio||1;
+    w=Math.max(1,r.width); h=Math.max(1,r.height);
+    canvas.width=Math.round(w*dpr); canvas.height=Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  new ResizeObserver(resize).observe(canvas); resize();
+
+  function down(e){keys.add(e.code); if(['KeyW','KeyA','KeyS','KeyD','KeyQ','KeyE','ShiftLeft','ShiftRight','Space'].includes(e.code)) e.preventDefault();}
+  function up(e){keys.delete(e.code);}
+  window.addEventListener('keydown',down,{passive:false}); window.addEventListener('keyup',up);
+  canvas.addEventListener('contextmenu',e=>e.preventDefault());
+  canvas.addEventListener('mousedown',e=>{if(e.button===2){rmb=true;lastX=e.clientX;lastY=e.clientY;canvas.requestPointerLock?.();}});
+  document.addEventListener('mouseup',e=>{if(e.button===2){rmb=false;if(document.pointerLockElement===canvas)document.exitPointerLock?.();}});
+  document.addEventListener('mousemove',e=>{
+    if(!rmb) return;
+    const dx=e.movementX ?? (e.clientX-lastX), dy=e.movementY ?? (e.clientY-lastY);
+    lastX=e.clientX;lastY=e.clientY;
+    cam.yaw += dx*0.0025; cam.pitch=Math.max(-1.45,Math.min(1.45,cam.pitch-dy*0.0025));
+  });
+
+  function sceneActive(){return !document.getElementById('n64Game')?.classList.contains('active');}
+  function showScene(){
+    document.getElementById('n64Game')?.classList.remove('active');
+    viewport.classList.add('scene-mode');
+    const wm=document.getElementById('sceneWatermark');if(wm)wm.style.display='none';
+    canvas.style.display='block';
+  }
+  sceneTab?.addEventListener('click',showScene);
+  showScene();
+
+  function update(dt){
+    if(!sceneActive()) return;
+    const moving=['KeyW','KeyA','KeyS','KeyD','KeyQ','KeyE','Space','ShiftLeft','ShiftRight'].some(k=>keys.has(k));
+    const target=keys.has('ShiftLeft')||keys.has('ShiftRight') ? 14 : 7;
+    if(moving) moveSpeed += (target-moveSpeed)*Math.min(1,dt*0.75);
+    else moveSpeed += (0-moveSpeed)*Math.min(1,dt*0.45);
+    const speed=moveSpeed*dt;
+    const fx=Math.sin(cam.yaw), fz=-Math.cos(cam.yaw);
+    const rx=Math.cos(cam.yaw), rz=Math.sin(cam.yaw);
+    if(keys.has('KeyW')){cam.x+=fx*speed;cam.z+=fz*speed}
+    if(keys.has('KeyS')){cam.x-=fx*speed;cam.z-=fz*speed}
+    if(keys.has('KeyA')){cam.x-=rx*speed;cam.z-=rz*speed}
+    if(keys.has('KeyD')){cam.x+=rx*speed;cam.z+=rz*speed}
+    if(keys.has('Space')||keys.has('KeyE'))cam.y+=speed;
+    if(keys.has('ShiftLeft')||keys.has('ShiftRight')||keys.has('KeyQ'))cam.y-=speed;
+  }
+
+  function project(x,y,z){
+    let dx=x-cam.x,dy=y-cam.y,dz=z-cam.z;
+    const cy=Math.cos(cam.yaw),sy=Math.sin(cam.yaw);
+    let xx=dx*cy-dz*sy, zz=dx*sy+dz*cy;
+    const cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch);
+    let yy=dy*cp-zz*sp; zz=dy*sp+zz*cp;
+    if(zz<=.1)return null;
+    const f=Math.min(w,h)*.95;
+    return {x:w/2+(xx/zz)*f,y:h/2-(yy/zz)*f,z:zz};
+  }
+  function drawCube(o){
+    const s=o.s/2, verts=[];
+    for(const dx of [-s,s])for(const dy of [-s,s])for(const dz of [-s,s])verts.push(project(o.x+dx,o.y+dy,o.z+dz));
+    if(verts.some(v=>!v))return;
+    const faces=[[0,1,3,2],[4,6,7,5],[0,4,5,1],[2,3,7,6],[0,2,6,4],[1,5,7,3]];
+    const polys=faces.map(f=>({p:f.map(i=>verts[i]),z:f.reduce((a,i)=>a+verts[i].z,0)/4})).sort((a,b)=>b.z-a.z);
+    polys.forEach((f,i)=>{ctx.beginPath();ctx.moveTo(f.p[0].x,f.p[0].y);f.p.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));ctx.closePath();ctx.fillStyle=['#777','#666','#595959','#707070','#4f4f4f','#808080'][i%6];ctx.fill();ctx.strokeStyle='#2d2d2d';ctx.stroke()});
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,'#6f8eaf');g.addColorStop(.55,'#b9d8e3');g.addColorStop(.56,'#77736f');g.addColorStop(1,'#5d5955');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+    // ground grid
+    ctx.lineWidth=1; ctx.strokeStyle='rgba(35,35,35,.42)';
+    const extent=60, step=2;
+    for(let x=-extent;x<=extent;x+=step){let a=project(x,0,-extent),b=project(x,0,extent);if(a&&b){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}
+    for(let z=-extent;z<=extent;z+=step){let a=project(-extent,0,z),b=project(extent,0,z);if(a&&b){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}
+    objects.slice().sort((a,b)=>((b.z-cam.z)**2+(b.x-cam.x)**2)-((a.z-cam.z)**2+(a.x-cam.x)**2)).forEach(drawCube);
+    ctx.fillStyle='rgba(255,255,255,.65)';ctx.font='11px "Segoe UI",Arial';ctx.fillText('Scene',10,17);
+    ctx.fillStyle='rgba(30,30,30,.65)';ctx.fillRect(10,h-34,270,23);ctx.fillStyle='#ddd';ctx.fillText('WASD: Move   Right Mouse: Look   E/Space: Up   Q: Down',16,h-19);
+  }
+  function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw();requestAnimationFrame(loop);} requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+(function(){
+  const gameTabSelector = '#tabs .tb:nth-child(2)';
+  const gameBox = document.getElementById('n64Game');
+  const viewport = document.getElementById('viewport');
+  const romInput = document.getElementById('n64Rom');
+  const err = document.getElementById('n64Error');
+  let emulatorLoaded = false;
+  let emulatorStarting = false;
+  let currentObjectUrl = null;
+
+  function showN64(){
+    gameBox.classList.add('active');
+    const wm=viewport.querySelector('.watermark'); if(wm) wm.style.display='none';
+  }
+  function hideN64(){
+    gameBox.classList.remove('active');
+    const wm=viewport.querySelector('.watermark'); if(wm) wm.style.display='block';
+  }
+  function loadEmulator(file){
+    if(!file) return;
+    err.style.display='none'; err.textContent='';
+    showN64();
+    if(currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
+    currentObjectUrl=URL.createObjectURL(file);
+    window.EJS_player='#n64Player';
+    window.EJS_gameName=file.name.replace(/\.[^.]+$/,'');
+    window.EJS_gameUrl=currentObjectUrl;
+    window.EJS_core='n64';
+    window.EJS_pathtodata='https://cdn.emulatorjs.org/stable/data/';
+    window.EJS_startOnLoaded=true;
+    window.EJS_askToReset=false;
+    window.EJS_askBeforeExit=false;
+    if(!emulatorLoaded && !emulatorStarting){
+      emulatorStarting=true;
+      const s=document.createElement('script');
+      s.src='https://cdn.emulatorjs.org/stable/data/loader.js';
+      s.onload=()=>{emulatorLoaded=true; emulatorStarting=false;};
+      s.onerror=()=>{emulatorStarting=false; err.textContent='Could not load the N64 emulator. Connect to the internet and reload.'; err.style.display='flex';};
+      document.body.appendChild(s);
+    } else if(emulatorLoaded){
+      // EmulatorJS creates its player on first load; reload the page if a second ROM is selected.
+      err.textContent='ROM selected. Reload the page to start a different ROM.'; err.style.display='flex';
+    }
+  }
+  romInput.addEventListener('change',()=>loadEmulator(romInput.files[0]));
+  const gameTab=document.querySelector(gameTabSelector);
+  if(gameTab) gameTab.addEventListener('click',showN64);
+  document.querySelectorAll('#tabs .tb').forEach((tab,i)=>{ if(i!==1) tab.addEventListener('click',hideN64); });
+})();
+</script>
+
+<script>
+/* ===== UNITY-LIKE SCENE FLY CAMERA ===== */
+(() => {
+  const scene = document.getElementById('sceneViewport') ||
+                document.querySelector('.scene-viewport') ||
+                document.querySelector('#scene');
+  if (!scene) return;
+
+  // Find or create a canvas without disturbing the existing UI.
+  let canvas = scene.querySelector('canvas.scene-fly-canvas');
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    canvas.className = 'scene-fly-canvas';
+    Object.assign(canvas.style, {
+      position:'absolute', inset:'0', width:'100%', height:'100%',
+      display:'block', cursor:'default'
+    });
+    if (getComputedStyle(scene).position === 'static') scene.style.position = 'relative';
+    scene.appendChild(canvas);
+  }
+
+  const ctx = canvas.getContext('2d');
+  const keys = new Set();
+  let pointerLocked = false;
+  let yaw = -0.55, pitch = -0.18;
+  let x = 0, y = 2.2, z = 7;
+  let vx = 0, vy = 0, vz = 0;
+  let last = performance.now();
+
+  const clamp = (n,a,b) => Math.max(a, Math.min(b,n));
+  const resize = () => {
+    const d = devicePixelRatio || 1;
+    canvas.width = Math.max(1, canvas.clientWidth*d);
+    canvas.height = Math.max(1, canvas.clientHeight*d);
+    ctx.setTransform(d,0,0,d,0,0);
+  };
+  addEventListener('resize', resize);
+  resize();
+
+  scene.addEventListener('contextmenu', e => e.preventDefault());
+  scene.addEventListener('mousedown', e => {
+    if (e.button === 2) {
+      pointerLocked = true;
+      scene.requestPointerLock?.();
+      canvas.style.cursor = 'none';
+    }
+  });
+  document.addEventListener('mouseup', e => {
+    if (e.button === 2) {
+      pointerLocked = false;
+      if (document.pointerLockElement === scene) document.exitPointerLock?.();
+      canvas.style.cursor = 'default';
+    }
+  });
+  document.addEventListener('mousemove', e => {
+    if (!pointerLocked) return;
+    yaw -= e.movementX * 0.0022;
+    pitch = clamp(pitch - e.movementY * 0.0022, -1.48, 1.48);
+  });
+  addEventListener('keydown', e => {
+    if (['KeyW','KeyA','KeyS','KeyD','KeyQ','KeyE','Space','ShiftLeft','ShiftRight'].includes(e.code))
+      e.preventDefault();
+    keys.add(e.code);
+  });
+  addEventListener('keyup', e => keys.delete(e.code));
+
+  function draw() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    ctx.clearRect(0,0,w,h);
+
+    // Unity-ish dark Scene background.
+    const g = ctx.createLinearGradient(0,0,0,h);
+    g.addColorStop(0,'#17191b');
+    g.addColorStop(1,'#26282a');
+    ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+
+    // Camera basis.
+    const cy=Math.cos(yaw), sy=Math.sin(yaw), cp=Math.cos(pitch), sp=Math.sin(pitch);
+    const fx=sy*cp, fy=sp, fz=cy*cp;
+    const rx=cy, rz=-sy;
+
+    const focal = Math.min(w,h)*0.9;
+    function project(px,py,pz) {
+      const dx=px-x, dy=py-y, dz=pz-z;
+      const cx=dx*rx + dz*rz;
+      const cz=dx*fx + dy*fy + dz*fz;
+      const cy2=dx*(-sy*sp) + dy*cp + dz*(-cy*sp);
+      if (cz <= .08) return null;
+      return [w/2 + cx*focal/cz, h/2 - cy2*focal/cz, cz];
+    }
+    function line3(a,b,alpha='rgba(150,150,150,.18)') {
+      const A=project(...a), B=project(...b); if(!A||!B)return;
+      ctx.strokeStyle=alpha; ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);ctx.stroke();
+    }
+
+    // Ground grid.
+    for(let i=-30;i<=30;i++){
+      line3([i*.5,0,-15],[i*.5,0,15], i===0?'rgba(190,70,70,.65)':'rgba(130,130,130,.18)');
+      line3([-15,0,i*.5],[15,0,i*.5], i===0?'rgba(70,130,210,.65)':'rgba(130,130,130,.18)');
+    }
+
+    // A few simple scene objects.
+    const cubes=[
+      [-2,1,-2,1.2,'#737373'],
+      [1.8,.65,-1,1.3,'#686868'],
+      [0,.5,2,1,'#5d5d5d']
+    ];
+    for(const [cx0,cy0,cz0,s,col] of cubes){
+      const pts=[
+        [cx0-s,cy0-s,cz0-s],[cx0+s,cy0-s,cz0-s],
+        [cx0+s,cy0+s,cz0-s],[cx0-s,cy0+s,cz0-s],
+        [cx0-s,cy0-s,cz0+s],[cx0+s,cy0-s,cz0+s],
+        [cx0+s,cy0+s,cz0+s],[cx0-s,cy0+s,cz0+s]
+      ].map(p=>project(...p));
+      const edges=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+      ctx.strokeStyle=col; ctx.globalAlpha=.75; ctx.lineWidth=1;
+      for(const [a,b] of edges) if(pts[a]&&pts[b]){
+        ctx.beginPath();ctx.moveTo(pts[a][0],pts[a][1]);ctx.lineTo(pts[b][0],pts[b][1]);ctx.stroke();
+      }
+      ctx.globalAlpha=1;
+    }
+
+    // Crosshair / viewport gizmo.
+    ctx.strokeStyle='rgba(220,220,220,.6)';
+    ctx.beginPath();ctx.moveTo(w/2-6,h/2);ctx.lineTo(w/2+6,h/2);
+    ctx.moveTo(w/2,h/2-6);ctx.lineTo(w/2,h/2+6);ctx.stroke();
+
+    ctx.fillStyle='rgba(210,210,210,.75)';
+    ctx.font='11px Segoe UI,Arial';
+    ctx.fillText('Scene',10,18);
+    ctx.fillStyle='rgba(170,170,170,.65)';
+    ctx.fillText('WASD: Move   Q/E: Down/Up   Right Mouse: Look',10,h-12);
+  }
+
+  function tick(now) {
+    const dt=Math.min(.05,(now-last)/1000); last=now;
+    const speedTarget = (keys.has('ShiftLeft')||keys.has('ShiftRight')) ? 12 : 4;
+    const accel = 1.8; // intentionally slow ramp
+    const move = (target,current) => current + (target-current)*(1-Math.exp(-accel*dt));
+
+    let mx=(keys.has('KeyD')?1:0)-(keys.has('KeyA')?1:0);
+    let mz=(keys.has('KeyW')?1:0)-(keys.has('KeyS')?1:0);
+    let my=(keys.has('KeyE')||keys.has('Space')?1:0)-(keys.has('KeyQ')?1:0);
+    const len=Math.hypot(mx,mz)||1; mx/=len; mz/=len;
+
+    const cy=Math.cos(yaw), sy=Math.sin(yaw);
+    const tx=(mx*cy + mz*sy)*speedTarget;
+    const tz=(mz*cy - mx*sy)*speedTarget;
+    vx=move(tx,vx); vz=move(tz,vz); vy=move(my*speedTarget,vy);
+
+    x+=vx*dt; y=Math.max(.2,y+vy*dt); z+=vz*dt;
+    draw();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+
+<script id="clutch-server-check">
+(()=>{const ENDPOINT="/api/clutch-check";let running=false;
+window.showServerCheckFallback=()=>{const box=document.getElementById("clutchServerLogin");if(box){box.classList.add("visible","error");const s=box.querySelector(".check-status");if(s)s.textContent="Error while catching data on Clutch's servers"}const p=document.getElementById("percent");if(p)p.textContent="CONNECTION FAILED";window.__clutchServerFailed=true};
+window.verifyClutchServerFile=async()=>{if(running)return false;running=true;const box=document.getElementById("clutchServerLogin"),status=box?.querySelector(".check-status");if(box)box.classList.add("visible");if(status)status.textContent="CONNECTING TO CLUTCH'S SERVERS...";const c=new AbortController(),timer=setTimeout(()=>c.abort(),5000);try{const r=await fetch(ENDPOINT+"?check="+Date.now(),{method:"GET",cache:"no-store",credentials:"same-origin",signal:c.signal});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json();if(!d||d.ok!==true)throw new Error("invalid response");if(status)status.textContent="CLUTCH SERVER DATA CONNECTED [ OK ]";return true}catch(e){window.showServerCheckFallback();return false}finally{clearTimeout(timer);running=false}};
+})();
+</script></body>
+</html>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const sceneTab = [...document.querySelectorAll('*')].find(e =>
+    e.children.length === 0 && e.textContent.trim() === 'Scene');
+  const gameTab = [...document.querySelectorAll('*')].find(e =>
+    e.children.length === 0 && e.textContent.trim() === 'Game');
+  if (sceneTab && gameTab) {
+    sceneTab.classList.add('active');
+    gameTab.classList.remove('active');
+  }
+});
+</script>
